@@ -1,0 +1,461 @@
+# Demo LLM Training Pipeline Configuration
+# This pipeline demonstrates the complete ML lifecycle
+
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  name: demo-llm-training-pipeline
+  namespace: mlops-platform
+  labels:
+    app: demo-llm
+    pipeline: training
+    version: "1.0.0"
+spec:
+  entrypoint: training-pipeline
+  
+  # Pipeline parameters
+  arguments:
+    parameters:
+    - name: model-name
+      value: "demo-llm"
+    - name: model-version
+      value: "1.0.0"
+    - name: experiment-name
+      value: "demo-llm-experiment"
+    - name: data-source
+      value: "demo-data"
+    - name: training-config
+      value: "/config/training_config.yaml"
+    - name: registry-url
+      value: "http://model-registry:8000"
+    - name: max-epochs
+      value: "3"
+    - name: batch-size
+      value: "4"
+    - name: learning-rate
+      value: "5e-5"
+  
+  # Volumes for demo (using emptyDir for simplicity)
+  volumes:
+  - name: workspace
+    emptyDir:
+      sizeLimit: 10Gi
+  
+  templates:
+  
+  # Main pipeline template
+  - name: training-pipeline
+    dag:
+      tasks:
+      
+      # Data preparation
+      - name: prepare-data
+        template: data-preparation
+        arguments:
+          parameters:
+          - name: data-source
+            value: "{{workflow.parameters.data-source}}"
+      
+      # Data validation
+      - name: validate-data
+        template: data-validation
+        dependencies: [prepare-data]
+        arguments:
+          parameters:
+          - name: data-path
+            value: "{{tasks.prepare-data.outputs.parameters.data-path}}"
+      
+      # Model training
+      - name: train-model
+        template: model-training
+        dependencies: [validate-data]
+        arguments:
+          parameters:
+          - name: data-path
+            value: "{{tasks.prepare-data.outputs.parameters.data-path}}"
+          - name: model-name
+            value: "{{workflow.parameters.model-name}}"
+          - name: model-version
+            value: "{{workflow.parameters.model-version}}"
+          - name: experiment-name
+            value: "{{workflow.parameters.experiment-name}}"
+          - name: training-config
+            value: "{{workflow.parameters.training-config}}"
+      
+      # Model evaluation
+      - name: evaluate-model
+        template: model-evaluation
+        dependencies: [train-model]
+        arguments:
+          parameters:
+          - name: model-path
+            value: "{{tasks.train-model.outputs.parameters.model-path}}"
+          - name: data-path
+            value: "{{tasks.prepare-data.outputs.parameters.data-path}}"
+      
+      # Model validation (quality gates)
+      - name: validate-model
+        template: model-validation
+        dependencies: [evaluate-model]
+        arguments:
+          parameters:
+          - name: model-path
+            value: "{{tasks.train-model.outputs.parameters.model-path}}"
+          - name: metrics
+            value: "{{tasks.evaluate-model.outputs.parameters.metrics}}"
+      
+      # Model registration
+      - name: register-model
+        template: model-registration
+        dependencies: [validate-model]
+        when: "{{tasks.validate-model.outputs.parameters.passed}} == 'true'"
+        arguments:
+          parameters:
+          - name: model-path
+            value: "{{tasks.train-model.outputs.parameters.model-path}}"
+          - name: model-name
+            value: "{{workflow.parameters.model-name}}"
+          - name: model-version
+            value: "{{workflow.parameters.model-version}}"
+          - name: registry-url
+            value: "{{workflow.parameters.registry-url}}"
+          - name: metrics
+            value: "{{tasks.evaluate-model.outputs.parameters.metrics}}"
+      
+      # Model deployment (to staging)
+      - name: deploy-staging
+        template: model-deployment
+        dependencies: [register-model]
+        arguments:
+          parameters:
+          - name: model-id
+            value: "{{tasks.register-model.outputs.parameters.model-id}}"
+          - name: environment
+            value: "staging"
+          - name: registry-url
+            value: "{{workflow.parameters.registry-url}}"
+
+  # Data preparation template
+  - name: data-preparation
+    inputs:
+      parameters:
+      - name: data-source
+    outputs:
+      parameters:
+      - name: data-path
+        valueFrom:
+          path: /workspace/data/prepared_data_path.txt
+    container:
+      image: demo-llm:latest
+      command: [python]
+      args:
+      - -c
+      - |
+        import os
+        import json
+        
+        # Create demo data
+        demo_texts = [
+            "Machine learning is revolutionizing technology.",
+            "The future of AI is bright and full of possibilities.",
+            "Deep learning models process vast amounts of data.",
+            "MLOps ensures reliable model deployment and monitoring.",
+            "Transformers have changed natural language processing.",
+        ] * 50  # Create enough data for training
+        
+        # Save data
+        os.makedirs('/workspace/data', exist_ok=True)
+        with open('/workspace/data/train_data.json', 'w') as f:
+            json.dump({"texts": demo_texts}, f)
+        
+        # Output data path
+        with open('/workspace/data/prepared_data_path.txt', 'w') as f:
+            f.write('/workspace/data/train_data.json')
+        
+        print("Data preparation completed")
+      volumeMounts:
+      - name: workspace
+        mountPath: /workspace
+
+  # Data validation template
+  - name: data-validation
+    inputs:
+      parameters:
+      - name: data-path
+    container:
+      image: demo-llm:latest
+      command: [python]
+      args:
+      - -c
+      - |
+        import json
+        import sys
+        
+        data_path = "{{inputs.parameters.data-path}}"
+        
+        try:
+            with open(data_path, 'r') as f:
+                data = json.load(f)
+            
+            # Validate data structure
+            assert 'texts' in data, "Missing 'texts' field"
+            assert len(data['texts']) > 0, "No texts found"
+            assert all(isinstance(text, str) for text in data['texts']), "Invalid text format"
+            
+            print(f"Data validation passed. Found {len(data['texts'])} text samples.")
+            
+        except Exception as e:
+            print(f"Data validation failed: {e}")
+            sys.exit(1)
+      volumeMounts:
+      - name: workspace
+        mountPath: /workspace
+
+  # Model training template
+  - name: model-training
+    inputs:
+      parameters:
+      - name: data-path
+      - name: model-name
+      - name: model-version
+      - name: experiment-name
+      - name: training-config
+    outputs:
+      parameters:
+      - name: model-path
+        valueFrom:
+          path: /workspace/models/model_path.txt
+    container:
+      image: demo-llm:latest
+      command: [python]
+      args: ["/app/scripts/train.py"]
+      env:
+      - name: MLFLOW_TRACKING_URI
+        value: "http://mlflow:5000"
+      - name: DATA_PATH
+        value: "{{inputs.parameters.data-path}}"
+      - name: MODEL_NAME
+        value: "{{inputs.parameters.model-name}}"
+      - name: MODEL_VERSION
+        value: "{{inputs.parameters.model-version}}"
+      - name: EXPERIMENT_NAME
+        value: "{{inputs.parameters.experiment-name}}"
+      - name: OUTPUT_DIR
+        value: "/workspace/models"
+      resources:
+        requests:
+          memory: "2Gi"
+          cpu: "1000m"
+        limits:
+          memory: "4Gi"
+          cpu: "2000m"
+      volumeMounts:
+      - name: workspace
+        mountPath: /workspace
+
+  # Model evaluation template
+  - name: model-evaluation
+    inputs:
+      parameters:
+      - name: model-path
+      - name: data-path
+    outputs:
+      parameters:
+      - name: metrics
+        valueFrom:
+          path: /workspace/evaluation/metrics.json
+    container:
+      image: demo-llm:latest
+      command: [python]
+      args:
+      - -c
+      - |
+        import json
+        import os
+        import sys
+        sys.path.append('/app/src')
+        
+        from model import DemoLLMWrapper
+        
+        model_path = "{{inputs.parameters.model-path}}"
+        data_path = "{{inputs.parameters.data-path}}"
+        
+        # Load model
+        model = DemoLLMWrapper(model_path=model_path)
+        
+        # Load test data
+        with open(data_path, 'r') as f:
+            data = json.load(f)
+        
+        test_texts = data['texts'][:10]  # Use first 10 for evaluation
+        
+        # Evaluate model
+        total_chars = 0
+        total_time = 0
+        
+        import time
+        for text in test_texts:
+            start_time = time.time()
+            result = model.predict(text[:20], max_length=50)  # Use short inputs
+            end_time = time.time()
+            
+            total_chars += len(result)
+            total_time += (end_time - start_time)
+        
+        # Calculate metrics
+        avg_generation_time = total_time / len(test_texts)
+        avg_output_length = total_chars / len(test_texts)
+        
+        metrics = {
+            "average_generation_time": avg_generation_time,
+            "average_output_length": avg_output_length,
+            "test_samples": len(test_texts),
+            "model_parameters": model.get_model_metrics()["parameters"]
+        }
+        
+        # Save metrics
+        os.makedirs('/workspace/evaluation', exist_ok=True)
+        with open('/workspace/evaluation/metrics.json', 'w') as f:
+            json.dump(metrics, f, indent=2)
+        
+        print(f"Model evaluation completed. Metrics: {metrics}")
+      volumeMounts:
+      - name: workspace
+        mountPath: /workspace
+
+  # Model validation template
+  - name: model-validation
+    inputs:
+      parameters:
+      - name: model-path
+      - name: metrics
+    outputs:
+      parameters:
+      - name: passed
+        valueFrom:
+          path: /workspace/validation/passed.txt
+    container:
+      image: demo-llm:latest
+      command: [python]
+      args:
+      - -c
+      - |
+        import json
+        import os
+        
+        metrics_file = "{{inputs.parameters.metrics}}"
+        
+        # Load metrics
+        with open(metrics_file, 'r') as f:
+            metrics = json.load(f)
+        
+        # Define quality gates
+        max_generation_time = 5.0  # seconds
+        min_output_length = 10     # characters
+        
+        # Validate metrics
+        passed = True
+        reasons = []
+        
+        if metrics["average_generation_time"] > max_generation_time:
+            passed = False
+            reasons.append(f"Generation time too slow: {metrics['average_generation_time']:.2f}s > {max_generation_time}s")
+        
+        if metrics["average_output_length"] < min_output_length:
+            passed = False
+            reasons.append(f"Output too short: {metrics['average_output_length']:.1f} < {min_output_length}")
+        
+        # Save result
+        os.makedirs('/workspace/validation', exist_ok=True)
+        with open('/workspace/validation/passed.txt', 'w') as f:
+            f.write('true' if passed else 'false')
+        
+        if passed:
+            print("Model validation passed!")
+        else:
+            print(f"Model validation failed: {', '.join(reasons)}")
+            
+        # Don't fail the step, just record the result
+      volumeMounts:
+      - name: workspace
+        mountPath: /workspace
+
+  # Model registration template
+  - name: model-registration
+    inputs:
+      parameters:
+      - name: model-path
+      - name: model-name
+      - name: model-version
+      - name: registry-url
+      - name: metrics
+    outputs:
+      parameters:
+      - name: model-id
+        valueFrom:
+          path: /workspace/registration/model_id.txt
+    container:
+      image: demo-llm:latest
+      command: [python]
+      args: ["/app/scripts/register_model.py"]
+      env:
+      - name: MODEL_DIR
+        value: "{{inputs.parameters.model-path}}"
+      - name: REGISTRY_URL
+        value: "{{inputs.parameters.registry-url}}"
+      - name: MODEL_NAME
+        value: "{{inputs.parameters.model-name}}"
+      - name: VERSION
+        value: "{{inputs.parameters.model-version}}"
+      - name: OUTPUT_FILE
+        value: "/workspace/registration/registration_result.json"
+      volumeMounts:
+      - name: workspace
+        mountPath: /workspace
+
+  # Model deployment template
+  - name: model-deployment
+    inputs:
+      parameters:
+      - name: model-id
+      - name: environment
+      - name: registry-url
+    container:
+      image: demo-llm:latest
+      command: [python]
+      args:
+      - -c
+      - |
+        import requests
+        import json
+        import os
+        
+        model_id = "{{inputs.parameters.model-id}}"
+        environment = "{{inputs.parameters.environment}}"
+        registry_url = "{{inputs.parameters.registry-url}}"
+        
+        # Deploy model to staging environment
+        deploy_config = {
+            "model_id": model_id,
+            "environment": environment,
+            "replicas": 1,
+            "resources": {
+                "cpu": "500m",
+                "memory": "1Gi"
+            },
+            "auto_scaling": {
+                "enabled": True,
+                "min_replicas": 1,
+                "max_replicas": 3
+            }
+        }
+        
+        print(f"Deploying model {model_id} to {environment} environment")
+        print(f"Deployment config: {json.dumps(deploy_config, indent=2)}")
+        
+        # In a real scenario, this would call the deployment service
+        # For demo, we just log the deployment
+        print(f"Model deployed successfully to {environment}")
+      volumeMounts:
+      - name: workspace
+        mountPath: /workspace

@@ -1,0 +1,50 @@
+# Demo LLM Training Configuration
+
+# Model configuration
+model_name: "demo-llm"
+version: "1.0.0"
+vocab_size: 50257
+max_length: 512
+hidden_size: 384
+num_layers: 6
+num_heads: 6
+dropout: 0.1
+
+# Training configuration
+learning_rate: 5e-5
+batch_size: 4
+max_epochs: 3
+weight_decay: 0.01
+warmup_steps: 100
+gradient_clip_norm: 1.0
+
+# MLOps configuration
+use_mlflow: true
+experiment_name: "demo-llm-training"
+log_interval: 10
+save_interval: 500
+
+# Data configuration
+max_samples: 1000  # For demo purposes
+train_split: 0.8
+val_split: 0.2
+
+# Hardware configuration
+use_gpu: true
+mixed_precision: false
+dataloader_workers: 2
+
+# Monitoring
+early_stopping_patience: 5
+early_stopping_delta: 0.001
+save_best_only: true
+
+# Model registry integration
+register_model: true
+model_stage: "Staging"
+model_description: "Demo LLM model for MLOps pipeline demonstration"
+model_tags:
+  - demo
+  - llm
+  - gpt2-based
+  - mlops

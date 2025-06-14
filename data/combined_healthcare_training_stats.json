@@ -1,0 +1,26 @@
+{
+  "total_conversations": 525017,
+  "combination_timestamp": "2025-06-07T00:37:13.651588",
+  "source_datasets": {
+    "original_healthcare": 2,
+    "production_healthcare": 25000,
+    "real_healthcare": 15,
+    "adl_specialized": 100000,
+    "senior_care_specialized": 100000,
+    "mental_health_specialized": 100000,
+    "respite_care_specialized": 100000,
+    "disabilities_specialized": 100000
+  },
+  "dataset_distribution": {
+    "original_healthcare": 2,
+    "production_healthcare": 25000,
+    "real_healthcare": 15,
+    "specialized_adl": 100000,
+    "specialized_senior_care": 100000,
+    "specialized_mental_health": 100000,
+    "specialized_respite_care": 100000,
+    "specialized_disabilities": 100000
+  },
+  "training_ready": true,
+  "version": "4.0.0"
+}

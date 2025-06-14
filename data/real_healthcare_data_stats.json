@@ -1,0 +1,28 @@
+{
+  "total_conversations": 15,
+  "collection_timestamp": "2025-06-06T23:56:05.873032",
+  "distribution": {
+    "sources": {
+      "cdc_guidelines": 6,
+      "usda_guidelines": 3,
+      "public_health_guidelines": 3,
+      "mental_health_guidelines": 3
+    },
+    "categories": {
+      "public_health": 6,
+      "nutrition": 3,
+      "fitness": 3,
+      "mental_health": 3
+    },
+    "authorities": {
+      "CDC": 6,
+      "USDA": 3,
+      "public_health": 3,
+      "mental_health_guidelines": 3
+    }
+  },
+  "data_quality": {
+    "medical_disclaimer_coverage": 15,
+    "authority_verified": 15
+  }
+}

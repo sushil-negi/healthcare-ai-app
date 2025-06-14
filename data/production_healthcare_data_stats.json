@@ -1,0 +1,36 @@
+{
+  "total_conversations": 25000,
+  "total_messages": 55716,
+  "avg_messages_per_conversation": 2.22864,
+  "distribution": {
+    "categories": {
+      "fitness": 15000,
+      "nutrition": 10000
+    },
+    "complexity_levels": {
+      "intermediate": 8366,
+      "advanced": 8277,
+      "beginner": 4988,
+      "basic": 3369
+    },
+    "conversation_patterns": {
+      "question_answer": 3111,
+      "goal_setting": 3176,
+      "information_sharing": 3048,
+      "progress_tracking": 3189,
+      "troubleshooting": 3153,
+      "habit_formation": 3124,
+      "advice_seeking": 3123,
+      "motivation_support": 3076
+    },
+    "user_personas": {
+      "36-45": 5011,
+      "56+": 4972,
+      "46-55": 4925,
+      "18-25": 5045,
+      "26-35": 5047
+    }
+  },
+  "generation_timestamp": "2025-06-06T23:55:40.363654",
+  "version": "2.0.0"
+}

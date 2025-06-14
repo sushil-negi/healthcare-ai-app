@@ -1,0 +1,42 @@
+# Data Configuration for Demo LLM
+
+# Dataset source
+dataset_name: null  # Use demo data if null
+dataset_split: "train[:1000]"  # Small subset for demo
+text_column: "text"
+
+# Custom dataset path (if not using HuggingFace)
+custom_data_path: null
+data_format: "text"  # text, json, csv
+
+# Text preprocessing
+max_text_length: 512
+min_text_length: 10
+remove_duplicates: true
+lowercase: false
+remove_special_chars: false
+
+# Data augmentation (for demo purposes)
+augmentation:
+  enabled: false
+  techniques:
+    - synonym_replacement
+    - random_insertion
+  augmentation_probability: 0.1
+
+# Validation
+validation_split: 0.2
+stratify: false
+random_seed: 42
+
+# Demo data configuration
+demo_data:
+  topics:
+    - machine_learning
+    - artificial_intelligence
+    - deep_learning
+    - mlops
+    - data_science
+  num_samples_per_topic: 30
+  min_words_per_sample: 20
+  max_words_per_sample: 100

@@ -1,0 +1,227 @@
+name: Healthcare AI Feature Request
+description: Request a new feature for the Healthcare AI application
+title: "[FEATURE] "
+labels: ["enhancement", "healthcare-ai"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for suggesting a new healthcare AI feature! Please provide detailed information about your request.
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Target Component
+      description: Which Healthcare AI component should this feature be added to?
+      options:
+        - Healthcare AI Engine
+        - Crisis Detection System
+        - Web Interface
+        - Model Training Pipeline
+        - Metrics/Monitoring
+        - MLOps Integration
+        - HIPAA Compliance System
+        - New Component
+        - Cross-Component Feature
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Feature Priority
+      description: How important is this feature?
+      options:
+        - Critical (Patient Safety Related)
+        - High (Important for Healthcare Outcomes)
+        - Medium (Would Improve User Experience)
+        - Low (Future Consideration)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: healthcare_category
+    attributes:
+      label: Healthcare Category
+      description: Which healthcare category does this feature relate to?
+      options:
+        - Crisis Detection & Prevention
+        - Mental Health Support
+        - ADL (Activities of Daily Living)
+        - Senior Care
+        - Disability Support
+        - Medication Management
+        - Mobility & Physical Therapy
+        - Nutrition & Wellness
+        - Social Support
+        - General Healthcare
+        - HIPAA Compliance
+        - Multiple Categories
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Healthcare Problem Statement
+      description: What healthcare-related problem does this feature solve?
+      placeholder: Describe the current healthcare limitation or patient need
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Describe your proposed solution in detail
+      placeholder: How should this healthcare feature work?
+    validations:
+      required: true
+
+  - type: textarea
+    id: medical_accuracy
+    attributes:
+      label: Medical Accuracy Considerations
+      description: How will this feature ensure medical accuracy and safety?
+      placeholder: |
+        - Medical evidence sources
+        - Clinical validation approach
+        - Safety safeguards
+        - Professional review process
+
+  - type: dropdown
+    id: user_type
+    attributes:
+      label: Primary Users
+      description: Who would primarily use this feature?
+      options:
+        - Patients/Care Recipients
+        - Family Caregivers
+        - Healthcare Professionals
+        - Crisis Counselors
+        - System Administrators
+        - All User Types
+    validations:
+      required: true
+
+  - type: textarea
+    id: use_cases
+    attributes:
+      label: Healthcare Use Cases
+      description: Provide specific healthcare use cases for this feature
+      placeholder: |
+        1. When a patient asks about medication, the system should...
+        2. During a crisis situation, the feature should...
+        3. For elderly care inquiries, this would enable...
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Acceptance Criteria
+      description: What criteria must be met for this feature to be considered complete?
+      placeholder: |
+        - [ ] Feature provides accurate medical information
+        - [ ] Crisis detection works correctly
+        - [ ] HIPAA compliance maintained
+        - [ ] Medical disclaimers included
+        - [ ] Response time < 500ms
+        - [ ] 988 integration functional (if applicable)
+
+  - type: checkboxes
+    id: compliance_requirements
+    attributes:
+      label: Compliance Requirements
+      description: Check all compliance requirements that apply
+      options:
+        - label: HIPAA compliance required
+        - label: Medical disclaimer needed
+        - label: Crisis detection integration
+        - label: 988 hotline integration
+        - label: Audit logging required
+        - label: Data anonymization needed
+        - label: Professional medical review
+        - label: No special compliance requirements
+
+  - type: checkboxes
+    id: safety_requirements
+    attributes:
+      label: Safety Requirements
+      description: Check all safety requirements that apply
+      options:
+        - label: Patient safety critical
+        - label: Crisis intervention capability
+        - label: Emergency escalation procedures
+        - label: Fail-safe mechanisms needed
+        - label: Real-time monitoring required
+        - label: Professional oversight integration
+        - label: No special safety requirements
+
+  - type: textarea
+    id: clinical_evidence
+    attributes:
+      label: Clinical Evidence & Sources
+      description: What clinical evidence or medical sources support this feature?
+      placeholder: |
+        - Medical guidelines referenced
+        - Clinical studies supporting approach
+        - Professional medical standards
+        - Evidence-based practices
+
+  - type: textarea
+    id: business_value
+    attributes:
+      label: Healthcare Value
+      description: What healthcare value would this feature provide?
+      placeholder: |
+        - Improved patient outcomes
+        - Better crisis prevention
+        - Enhanced caregiver support
+        - Increased accessibility
+        - Cost reduction in healthcare delivery
+    validations:
+      required: true
+
+  - type: dropdown
+    id: urgency
+    attributes:
+      label: Implementation Urgency
+      description: How urgent is the implementation of this feature?
+      options:
+        - Immediate (Patient Safety Risk)
+        - Within 1 month (High Impact)
+        - Within 3 months (Moderate Impact)
+        - Within 6 months (Low Impact)
+        - Future Release (Nice to Have)
+    validations:
+      required: true
+
+  - type: textarea
+    id: integration_considerations
+    attributes:
+      label: MLOps Integration Considerations
+      description: How should this feature integrate with the MLOps platform?
+      placeholder: |
+        - Model registry requirements
+        - Experiment tracking needs
+        - Feature store integration
+        - Monitoring requirements
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission Checklist
+      options:
+        - label: I have searched for existing issues and this is not a duplicate
+          required: true
+        - label: I have clearly described the healthcare problem and solution
+          required: true
+        - label: I have considered patient safety and compliance requirements
+          required: true
+        - label: I have provided clinical evidence or medical justification
+          required: true
+        - label: I have specified the healthcare value and impact
+          required: true

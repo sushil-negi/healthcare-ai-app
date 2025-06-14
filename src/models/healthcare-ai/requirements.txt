@@ -1,0 +1,38 @@
+# Demo LLM Model Dependencies
+
+# Core ML libraries
+torch>=2.0.0
+transformers>=4.30.0
+datasets>=2.12.0
+tokenizers>=0.13.0
+
+# MLOps integration
+mlflow>=2.5.0
+wandb>=0.15.0
+
+# System monitoring
+psutil>=5.9.0
+nvidia-ml-py>=12.535.133
+gpustat>=1.1.1
+
+# Data processing
+pandas>=1.5.0,<2.0  # Compatible with Python 3.8+
+numpy>=1.23.0,<1.24  # Compatible with Python 3.8
+scikit-learn>=1.1.0,<1.2  # Compatible with Python 3.8
+
+# Utilities
+tqdm>=4.65.0
+pyyaml>=6.0
+python-dotenv>=1.0.0
+click>=8.1.0
+
+# Model serving
+fastapi>=0.100.0
+uvicorn>=0.22.0
+pydantic>=2.0.0
+
+# Development
+pytest>=7.4.0
+black>=23.0.0
+isort>=5.12.0
+flake8>=6.0.0

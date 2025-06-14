@@ -1,0 +1,37 @@
+[
+  {
+    "query": "I have trouble getting out of bed in the morning due to my mobility issues",
+    "category": "adl_mobility",
+    "response": "I understand how challenging mobility issues can make daily tasks like getting out of bed. Here are some gentle strategies: 1) Consider a bed rail or grab bar for support, 2) Practice slow movements and take your time, 3) Keep necessary items within reach, 4) Consider occupational therapy evaluation for adaptive equipment. Please consult with your healthcare provider for personalized recommendations."
+  },
+  {
+    "query": "I'm worried about my elderly parent taking too many medications",
+    "category": "senior_medication",
+    "response": "Medication management is a valid concern for elderly adults. Here's what can help: 1) Create a medication list with times and dosages, 2) Use a pill organizer or medication management app, 3) Schedule regular medication reviews with the pharmacist or doctor, 4) Watch for side effects or interactions, 5) Consider medication synchronization services. Always consult healthcare providers before making changes."
+  },
+  {
+    "query": "I feel anxious about my health condition and don't know what to do",
+    "category": "mental_health_anxiety",
+    "response": "Health-related anxiety is very common and understandable. Here are some supportive strategies: 1) Practice deep breathing or mindfulness techniques, 2) Keep a journal of your concerns to discuss with your healthcare provider, 3) Stay informed but limit excessive health information searching, 4) Connect with support groups or counseling services, 5) Maintain regular contact with your healthcare team. If anxiety becomes overwhelming, please reach out to a mental health professional."
+  },
+  {
+    "query": "How can I maintain social connections while managing my health condition?",
+    "category": "senior_social",
+    "response": "Maintaining social connections is crucial for overall well-being. Consider these approaches: 1) Schedule regular phone calls or video chats with friends and family, 2) Join community centers or senior groups with health-conscious activities, 3) Participate in online communities related to your interests or condition, 4) Ask friends to visit or accompany you to appointments, 5) Consider volunteer opportunities that accommodate your health needs. Social support significantly benefits both physical and mental health. Please discuss any health-related social limitations with your healthcare provider for personalized guidance."
+  },
+  {
+    "query": "I need help with personal care tasks but feel embarrassed to ask",
+    "category": "adl_self_care",
+    "response": "Needing help with personal care is completely normal and nothing to be embarrassed about. Many people require assistance at various points in their lives. Here are some suggestions: 1) Start by talking to trusted family members or friends, 2) Consider professional home care services for privacy and expertise, 3) Explore adaptive equipment that can increase independence, 4) Speak with occupational therapists about techniques and tools, 5) Remember that accepting help shows strength and wisdom. Your dignity and comfort are the priority. Please consult with your healthcare provider to assess your specific needs and available resources."
+  },
+  {
+    "query": "I'm feeling isolated and depressed about my health situation",
+    "category": "mental_health_depression",
+    "response": "Feeling isolated and depressed about health challenges is very common, and you're not alone. It's important to address these feelings: 1) Consider speaking with a mental health counselor who specializes in health-related issues, 2) Connect with support groups for people with similar conditions, 3) Maintain a routine that includes activities you enjoy, 4) Stay connected with friends and family, even in small ways, 5) Discuss these feelings with your healthcare provider as they may impact your overall health. Help is available, and seeking support is a sign of strength."
+  },
+  {
+    "query": "I'm having thoughts of suicide and don't know what to do",
+    "category": "crisis_mental_health",
+    "response": "I'm very concerned about you and want you to know that help is available immediately. Please contact: 1) National Suicide Prevention Lifeline: 988 (available 24/7), 2) Crisis Text Line: Text HOME to 741741, 3) Go to your nearest emergency room, 4) Call 911. You are not alone, and these thoughts can be treated. Many people who have felt this way have found relief and gone on to live fulfilling lives. Please reach out for help right now - your life has value and meaning."
+  }
+]

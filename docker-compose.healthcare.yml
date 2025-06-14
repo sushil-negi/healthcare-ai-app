@@ -1,0 +1,148 @@
+version: '3.8'
+
+services:
+  # Healthcare AI Engine
+  healthcare-ai:
+    build: 
+      context: ./src/models/healthcare-ai
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8001"
+    environment:
+      # MLOps Platform Integration
+      - MLOPS_MODEL_REGISTRY_URL=http://model-registry:8000
+      - MLOPS_EXPERIMENT_TRACKING_URL=http://experiment-tracking:8003
+      - MLOPS_FEATURE_STORE_URL=http://feature-store:8002
+      - MLOPS_PIPELINE_ORCHESTRATOR_URL=http://pipeline-orchestrator:8004
+      - MLOPS_AB_TESTING_URL=http://ab-testing:8090
+      
+      # Healthcare AI Configuration
+      - HEALTHCARE_AI_MODEL_PATH=/models/healthcare-ai-v1.0
+      - CRISIS_DETECTION_THRESHOLD=0.85
+      - RESPONSE_TIMEOUT_SECONDS=30
+      - MAX_CONVERSATION_LENGTH=1000
+      
+      # Crisis Response Configuration
+      - CRISIS_HOTLINE_API_URL=https://api.988lifeline.org
+      - EMERGENCY_ESCALATION_ENABLED=true
+      - CRISIS_RESPONSE_LOG_LEVEL=INFO
+      
+      # Security & Compliance
+      - HIPAA_COMPLIANCE_MODE=true
+      - PHI_ANONYMIZATION_ENABLED=true
+      - AUDIT_LOGGING_ENABLED=true
+      - SECURITY_HEADERS_ENABLED=true
+      
+      # Performance Settings
+      - MAX_CONCURRENT_REQUESTS=100
+      - RESPONSE_CACHE_TTL_SECONDS=300
+      - MODEL_WARMUP_ENABLED=true
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+      - healthcare_logs:/app/logs
+    networks:
+      - healthcare-ai
+      - mlops-platform-network
+    depends_on:
+      - healthcare-redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Healthcare Web Interface  
+  healthcare-web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - HEALTHCARE_AI_URL=http://healthcare-ai:8001
+      - API_TIMEOUT_SECONDS=30
+      - SESSION_SECRET=${SESSION_SECRET:-healthcare-ai-secret}
+      - HIPAA_COMPLIANCE_MODE=true
+    depends_on:
+      - healthcare-ai
+    networks:
+      - healthcare-ai
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Healthcare Metrics Exporter
+  healthcare-metrics:
+    build:
+      context: ./monitoring
+      dockerfile: Dockerfile.metrics-exporter
+    ports:
+      - "8082:8082"
+    environment:
+      - HEALTHCARE_AI_URL=http://healthcare-ai:8001
+      - PROMETHEUS_PORT=8082
+      - METRICS_INTERVAL_SECONDS=30
+    depends_on:
+      - healthcare-ai
+    networks:
+      - healthcare-ai
+      - mlops-platform-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8082/metrics"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Healthcare-specific Redis for caching
+  healthcare-redis:
+    image: redis:7-alpine
+    ports:
+      - "6380:6379"
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - healthcare_redis_data:/data
+    networks:
+      - healthcare-ai
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Training Pipeline (optional, for model updates)
+  healthcare-training:
+    build:
+      context: ./pipelines
+      dockerfile: Dockerfile.training
+    environment:
+      - MLOPS_MODEL_REGISTRY_URL=http://model-registry:8000
+      - MLOPS_EXPERIMENT_TRACKING_URL=http://experiment-tracking:8003
+      - TRAINING_DATA_PATH=/app/data/test_healthcare_training.json
+      - MODEL_OUTPUT_PATH=/app/models
+      - CRISIS_DETECTION_ENABLED=true
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+      - training_logs:/app/logs
+    networks:
+      - healthcare-ai
+      - mlops-platform-network
+    profiles:
+      - training
+    depends_on:
+      - healthcare-redis
+
+volumes:
+  healthcare_redis_data:
+  healthcare_logs:
+  training_logs:
+
+networks:
+  healthcare-ai:
+    driver: bridge
+    name: healthcare-ai-network
+  mlops-platform-network:
+    external: true

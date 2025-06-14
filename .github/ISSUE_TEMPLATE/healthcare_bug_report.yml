@@ -1,0 +1,171 @@
+name: Healthcare AI Bug Report
+description: Report a bug in the Healthcare AI application
+title: "[BUG] "
+labels: ["bug", "healthcare-ai"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting a bug in the Healthcare AI application! Please provide detailed information to help us resolve the issue quickly.
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Affected Component
+      description: Which Healthcare AI component is affected?
+      options:
+        - Healthcare AI Engine
+        - Crisis Detection System
+        - Web Interface
+        - Model Training Pipeline
+        - Metrics/Monitoring
+        - MLOps Integration
+        - HIPAA Compliance System
+        - Multiple Components
+        - Unknown
+    validations:
+      required: true
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      description: In which environment did this bug occur?
+      options:
+        - Development (local)
+        - Staging
+        - Production
+        - CI/CD Pipeline
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Bug Severity
+      description: How severe is this bug?
+      options:
+        - Critical (Service Down / Crisis Detection Failure)
+        - High (Major Healthcare Feature Broken)
+        - Medium (Feature Partially Working)
+        - Low (Minor Issue)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: healthcare_impact
+    attributes:
+      label: Healthcare Impact
+      description: What is the healthcare-specific impact?
+      options:
+        - Crisis detection failure
+        - Incorrect medical guidance
+        - HIPAA compliance violation
+        - Response quality degradation
+        - 988 hotline integration failure
+        - Medical disclaimer missing
+        - Performance affecting user safety
+        - Minor healthcare workflow issue
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of the bug
+      placeholder: Describe what happened and what you expected to happen
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Step-by-step instructions to reproduce the bug
+      placeholder: |
+        1. Send healthcare query...
+        2. Observe response...
+        3. Check crisis detection...
+        4. See error...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: healthcare_context
+    attributes:
+      label: Healthcare Context
+      description: Additional healthcare-specific context
+      placeholder: |
+        - Type of healthcare query
+        - Crisis situation involved (Y/N)
+        - Medical category affected
+        - HIPAA implications
+        - Patient safety concerns
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs and Error Messages
+      description: Please include relevant logs, error messages, or stack traces
+      render: shell
+
+  - type: textarea
+    id: environment_details
+    attributes:
+      label: Environment Details
+      description: Please provide environment details
+      placeholder: |
+        - Healthcare AI version:
+        - MLOps platform connectivity:
+        - Model version:
+        - Browser (if web interface):
+        - Operating System:
+
+  - type: checkboxes
+    id: safety_checklist
+    attributes:
+      label: Safety and Compliance Impact
+      description: Check all that apply
+      options:
+        - label: This bug could affect patient safety
+        - label: This bug involves crisis detection failure
+        - label: This bug could violate HIPAA compliance
+        - label: This bug affects medical guidance accuracy
+        - label: This bug impacts emergency response (988 integration)
+        - label: This bug affects audit logging
+        - label: No safety or compliance impact
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission Checklist
+      options:
+        - label: I have searched for existing issues and this is not a duplicate
+          required: true
+        - label: I have provided sufficient details to reproduce the issue
+          required: true
+        - label: I have included healthcare-specific context
+          required: true
+        - label: I have assessed safety and compliance impact
+          required: true
+        - label: I have included relevant logs and error messages
+          required: true

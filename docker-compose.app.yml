@@ -1,0 +1,112 @@
+# Healthcare AI Application Services
+# Application-specific services that use the MLOps platform
+
+services:
+  # Healthcare AI Service
+  healthcare-ai:
+    build: ./src/models/healthcare-ai-k8s
+    ports:
+      - "8080:8080"
+    environment:
+      # MLOps Platform Integration
+      MODEL_REGISTRY_URL: http://host.docker.internal:8000
+      EXPERIMENT_TRACKING_URL: http://host.docker.internal:8003
+      FEATURE_STORE_URL: http://host.docker.internal:8002
+      
+      # Healthcare AI Configuration
+      ENVIRONMENT: development
+      LOG_LEVEL: INFO
+      REDIS_URL: redis://host.docker.internal:6379
+      
+      # Healthcare-specific settings
+      CRISIS_DETECTION_ENABLED: true
+      MEDICAL_DISCLAIMER_REQUIRED: true
+      HIPAA_COMPLIANCE_MODE: true
+    volumes:
+      - ./data:/app/data:ro
+    networks:
+      - healthcare-ai
+
+  # Healthcare Web Interface
+  healthcare-web:
+    build: ./web
+    ports:
+      - "8081:8080"
+    environment:
+      HEALTHCARE_API_URL: http://healthcare-ai:8080
+    depends_on:
+      - healthcare-ai
+    networks:
+      - healthcare-ai
+
+  # Healthcare Data Pipeline
+  healthcare-data-pipeline:
+    build:
+      context: .
+      dockerfile: Dockerfile.pipeline
+    environment:
+      # MLOps Platform Integration
+      FEATURE_STORE_URL: http://host.docker.internal:8002
+      MODEL_REGISTRY_URL: http://host.docker.internal:8000
+      
+      # Data pipeline configuration
+      DATA_SOURCE: /app/data
+      BATCH_SIZE: 100
+      VALIDATION_ENABLED: true
+    volumes:
+      - ./data:/app/data
+    networks:
+      - healthcare-ai
+    profiles:
+      - data-pipeline
+
+  # Healthcare Model Training Service
+  healthcare-training:
+    build:
+      context: .
+      dockerfile: Dockerfile.training
+    environment:
+      # MLOps Platform Integration
+      EXPERIMENT_TRACKING_URL: http://host.docker.internal:8003
+      MODEL_REGISTRY_URL: http://host.docker.internal:8000
+      
+      # Training configuration
+      TRAINING_DATA_PATH: /app/data/test_healthcare_training.json
+      MODEL_OUTPUT_PATH: /app/models
+      VALIDATION_SPLIT: 0.2
+    volumes:
+      - ./data:/app/data:ro
+      - healthcare_models:/app/models
+    networks:
+      - healthcare-ai
+    profiles:
+      - training
+
+  # Healthcare Metrics Exporter
+  healthcare-metrics:
+    build:
+      context: .
+      dockerfile: Dockerfile.metrics
+    ports:
+      - "8082:8080"
+    environment:
+      HEALTHCARE_SERVICE_URL: http://healthcare-ai:8080
+      PROMETHEUS_PORT: 8080
+      METRICS_INTERVAL: 30
+    depends_on:
+      - healthcare-ai
+    networks:
+      - healthcare-ai
+    profiles:
+      - monitoring
+
+volumes:
+  healthcare_models:
+
+networks:
+  healthcare-ai:
+    driver: bridge
+  # Connect to platform network for MLOps services
+  default:
+    external:
+      name: mlops-project_mlops-platform
