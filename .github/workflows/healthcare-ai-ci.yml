@@ -183,18 +183,18 @@ jobs:
         # Check that training data contains medical disclaimers
         if [ -f data/test_healthcare_training.json ]; then
           python -c "
-import json
-with open('data/test_healthcare_training.json') as f:
-    data = json.load(f)
-    total = len(data)
-    with_disclaimer = sum(1 for item in data if 'consult' in item.get('response', '').lower() or 'doctor' in item.get('response', '').lower() or 'professional' in item.get('response', '').lower())
-    disclaimer_rate = with_disclaimer / total * 100
-    print(f'Medical disclaimer rate: {disclaimer_rate:.1f}%')
-    if disclaimer_rate < 80:
-        print('ERROR: Medical disclaimer rate below 80%')
-        exit(1)
-    print('Medical disclaimer rate acceptable')
-"
+          import json
+          with open('data/test_healthcare_training.json') as f:
+              data = json.load(f)
+              total = len(data)
+              with_disclaimer = sum(1 for item in data if 'consult' in item.get('response', '').lower() or 'doctor' in item.get('response', '').lower() or 'professional' in item.get('response', '').lower())
+              disclaimer_rate = with_disclaimer / total * 100
+              print(f'Medical disclaimer rate: {disclaimer_rate:.1f}%')
+              if disclaimer_rate < 80:
+                  print('ERROR: Medical disclaimer rate below 80%')
+                  exit(1)
+              print('Medical disclaimer rate acceptable')
+          "
         else
           echo "No training data found for disclaimer validation"
         fi
