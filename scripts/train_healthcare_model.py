@@ -15,8 +15,13 @@ import torch
 sys.path.append("/app/src")
 
 from model import SimpleLLM
-from transformers import (DataCollatorForLanguageModeling, GPT2Tokenizer,
-                          TextDataset, Trainer, TrainingArguments)
+from transformers import (
+    DataCollatorForLanguageModeling,
+    GPT2Tokenizer,
+    TextDataset,
+    Trainer,
+    TrainingArguments,
+)
 
 
 def setup_healthcare_training():
