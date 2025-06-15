@@ -19,7 +19,8 @@ logger = logging.getLogger(__name__)
 try:
     import numpy as np
     import pandas as pd
-    from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+    from sklearn.metrics import (accuracy_score, classification_report,
+                                 confusion_matrix)
 
     ML_AVAILABLE = True
 except ImportError:

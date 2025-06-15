@@ -1,0 +1,51 @@
+{
+  "file_path": "data/test_healthcare_training.json",
+  "total_samples": 7,
+  "compliance_passed": true,
+  "issues": [],
+  "warnings": [
+    "Access control compliance requires manual review of system documentation"
+  ],
+  "statistics": {
+    "phi_patterns_found": {
+      "names": 0,
+      "phone": 0,
+      "ssn": 0,
+      "email": 0,
+      "dates": 0,
+      "addresses": 0,
+      "medical_record": 0,
+      "account_numbers": 0
+    },
+    "disclaimer_coverage": {
+      "total_responses_with_disclaimers": 6,
+      "medical_queries": 4,
+      "medical_queries_with_disclaimers": 4,
+      "overall_coverage": 85.71428571428571,
+      "medical_coverage": 100.0
+    },
+    "crisis_compliance": {
+      "crisis_queries": 1,
+      "compliant_responses": 1,
+      "compliance_rate": 100.0
+    },
+    "data_minimization": {
+      "field_usage": {
+        "query": 7,
+        "category": 7,
+        "response": 7
+      },
+      "unnecessary_fields": []
+    },
+    "access_controls": {
+      "requirements": [
+        "Authentication required for all data access",
+        "Role-based access controls implemented",
+        "Audit logging for all data operations",
+        "Data encryption at rest and in transit",
+        "Regular access reviews conducted"
+      ],
+      "status": "Documentation review required"
+    }
+  }
+}
