@@ -266,7 +266,7 @@ class HealthcareResponseEngine:
         # Check cache first
         import hashlib
 
-        cache_key = hashlib.md5(user_input.lower().encode()).hexdigest()
+        cache_key = hashlib.sha256(user_input.lower().encode()).hexdigest()
         if cache_key in self.response_cache:
             cached_response = self.response_cache[cache_key].copy()
             cached_response["cached"] = True

@@ -350,14 +350,8 @@ Healthcare Assistant: """
             }
 
         # Check cache for similar queries
-        try:
-            # Try with usedforsecurity parameter (Python 3.9+)
-            input_hash = hashlib.md5(
-                user_input.lower().encode(), usedforsecurity=False
-            ).hexdigest()
-        except TypeError:
-            # Fallback for older Python versions
-            input_hash = hashlib.md5(user_input.lower().encode()).hexdigest()
+        # Use SHA-256 for security instead of MD5
+        input_hash = hashlib.sha256(user_input.lower().encode()).hexdigest()
         if input_hash in self.response_cache:
             cached = self.response_cache[input_hash]
             return {
