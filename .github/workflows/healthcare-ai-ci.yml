@@ -228,22 +228,22 @@ jobs:
     - name: Test crisis keyword detection
       run: |
         python -c "
-crisis_keywords = ['suicide', 'kill myself', 'end it all', 'hurt myself', 'die']
-print('Testing crisis keyword detection...')
-for keyword in crisis_keywords:
-    print(f'✓ Crisis keyword: {keyword}')
-print('Crisis keyword validation complete')
-"
+        crisis_keywords = ['suicide', 'kill myself', 'end it all', 'hurt myself', 'die']
+        print('Testing crisis keyword detection...')
+        for keyword in crisis_keywords:
+            print(f'✓ Crisis keyword: {keyword}')
+        print('Crisis keyword validation complete')
+        "
     
     - name: Validate 988 hotline integration
       run: |
         python -c "
-hotline_numbers = ['988', '1-800-273-8255']
-print('Validating crisis hotline numbers...')
-for number in hotline_numbers:
-    print(f'✓ Crisis hotline: {number}')
-print('Crisis hotline validation complete')
-"
+        hotline_numbers = ['988', '1-800-273-8255']
+        print('Validating crisis hotline numbers...')
+        for number in hotline_numbers:
+            print(f'✓ Crisis hotline: {number}')
+        print('Crisis hotline validation complete')
+        "
     
     - name: Test crisis response override
       run: |
