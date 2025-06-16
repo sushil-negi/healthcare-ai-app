@@ -269,7 +269,7 @@ docker-compose -f docker-compose.app.yml up -d
 ### Kubernetes
 ```bash
 # Deploy to healthcare-ai namespace
-kubectl apply -f deployment/k8s/environments/dev/
+kubectl apply -f deployment/k8s/healthcare-ai-v2-deployment.yaml
 
 # Check application status
 kubectl get pods -n healthcare-ai-dev
@@ -308,7 +308,11 @@ curl -X POST http://localhost:8080/chat \
 
 ## Documentation
 
-- [Healthcare AI Features](../docs/healthcare/features.md)
-- [Crisis Detection Guide](../docs/healthcare/crisis-detection.md)
-- [Model Training Guide](../docs/healthcare/model-training.md)
-- [Medical Compliance](../docs/healthcare/compliance.md)
+- [Healthcare AI Features](docs/healthcare/features.md)
+- [Crisis Detection Guide](docs/healthcare/crisis-detection.md)
+- [Model Training Guide](docs/healthcare/model-training.md)
+- [Medical Compliance](docs/healthcare/compliance.md)
+- [API Reference](docs/API.md)
+- [Scripts Documentation](docs/SCRIPTS.md)
+- [Architecture Overview](docs/ARCHITECTURE.md)
+- [Test Suite Summary](tests/TEST_SUITE_SUMMARY.md)
