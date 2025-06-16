@@ -156,11 +156,16 @@ class ResponseQualityValidator:
             # Check for action items (bullet points, numbered lists, or action words)
             response_text = sample["response"]
             has_action_items = (
-                "•" in response_text or
-                any(f"{i})" in response_text for i in range(1, 10)) or  # numbered lists 1) 2) etc
-                any(action in response for action in ["step", "first", "next", "then", "try", "consider"])
+                "•" in response_text
+                or any(
+                    f"{i})" in response_text for i in range(1, 10)
+                )  # numbered lists 1) 2) etc
+                or any(
+                    action in response
+                    for action in ["step", "first", "next", "then", "try", "consider"]
+                )
             )
-            
+
             if has_action_items:
                 completeness_metrics["has_action_items"] += 1
 
@@ -241,10 +246,20 @@ class ResponseQualityValidator:
             response = sample["response"].lower()
             category = sample.get("category", "")
 
-            # Focus on medical/healthcare categories  
+            # Focus on medical/healthcare categories
             if any(
                 med in category
-                for med in ["medication", "health", "medical", "treatment", "mental_health", "senior", "adl", "caregiver", "disability"]
+                for med in [
+                    "medication",
+                    "health",
+                    "medical",
+                    "treatment",
+                    "mental_health",
+                    "senior",
+                    "adl",
+                    "caregiver",
+                    "disability",
+                ]
             ):
                 total_medical_responses += 1
 

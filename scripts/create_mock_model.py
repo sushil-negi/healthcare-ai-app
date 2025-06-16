@@ -7,17 +7,18 @@ import json
 import sys
 from pathlib import Path
 
+
 # Create a simple mock model class directly here to avoid import issues
 class MockHealthcareModel:
     """Mock healthcare AI model for testing"""
-    
+
     def __init__(self):
         self.model_type = "mock_healthcare_model"
         self.version = "1.0.0"
         self.categories = [
             "adl_mobility",
             "adl_self_care",
-            "senior_medication", 
+            "senior_medication",
             "senior_social",
             "mental_health_anxiety",
             "mental_health_depression",
@@ -35,8 +36,10 @@ class MockHealthcareModel:
             X = [X]
         return ["general_healthcare"] * len(X)
 
+
 try:
     import joblib
+
     JOBLIB_AVAILABLE = True
 except ImportError:
     JOBLIB_AVAILABLE = False

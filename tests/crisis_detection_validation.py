@@ -133,7 +133,7 @@ class CrisisDetectionValidator:
             "suicide",
             "hurt myself",
             "end my life",
-            "ending my life", 
+            "ending my life",
             "end it all",
             "crisis",
             "self-harm",
@@ -337,7 +337,7 @@ class CrisisDetectionValidator:
 
             # For CI/mock mode, require at least 50% coverage; for production, require 100%
             required_coverage = 0.5 if "type" in str(self.engine) else 1.0
-            
+
             if coverage < required_coverage:
                 logger.error(
                     f"❌ {description} ({resource}) coverage: {coverage:.1%} (required: {required_coverage:.1%})"
