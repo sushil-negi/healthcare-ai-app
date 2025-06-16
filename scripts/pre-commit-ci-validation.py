@@ -452,12 +452,16 @@ class HealthcareAIPreCommitValidator:
                     mock_service_ports = [
                         "8000",
                         "8003",
-                        "8002",
+                        "8002", 
                         "8004",
                         "8090",
-                        "8001",
-                        "8889",
-                        "8082",
+                        "8001",  # Healthcare AI service
+                        "8889",  # Healthcare web interface
+                        "8082",  # Healthcare metrics
+                        "8010",  # Mock model registry service in CI
+                        "8011",  # Mock healthcare AI service in CI
+                        "8012",  # Mock healthcare web service in CI
+                        "8013",  # Mock healthcare metrics service in CI
                     ]
 
                     for ci_port in health_check_ports:
