@@ -12,8 +12,7 @@ from typing import Any, Dict
 import mlflow
 import requests
 import schedule
-from prometheus_client import (Counter, Gauge, Histogram, Summary,
-                               start_http_server)
+from prometheus_client import Counter, Gauge, Histogram, Summary, start_http_server
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

@@ -25,8 +25,13 @@ from fastapi.responses import Response
 
 # Prometheus metrics - create new registry to avoid conflicts
 try:
-    from prometheus_client import (CollectorRegistry, Counter, Gauge,
-                                   Histogram, generate_latest)
+    from prometheus_client import (
+        CollectorRegistry,
+        Counter,
+        Gauge,
+        Histogram,
+        generate_latest,
+    )
 
     PROMETHEUS_AVAILABLE = True
 except ImportError:
@@ -43,13 +48,21 @@ except ImportError:
 
 try:
     try:
-        from src.observability import (get_logger, get_tracer, healthcare_span,
-                                       init_observability,
-                                       trace_healthcare_function)
+        from src.observability import (
+            get_logger,
+            get_tracer,
+            healthcare_span,
+            init_observability,
+            trace_healthcare_function,
+        )
     except ImportError:
-        from observability import (get_logger, get_tracer, healthcare_span,
-                                   init_observability,
-                                   trace_healthcare_function)
+        from observability import (
+            get_logger,
+            get_tracer,
+            healthcare_span,
+            init_observability,
+            trace_healthcare_function,
+        )
     OBSERVABILITY_AVAILABLE = True
 except ImportError:
     OBSERVABILITY_AVAILABLE = False
