@@ -1,0 +1,51 @@
+# Machine Learning and Training
+scikit-learn==1.3.2
+numpy==1.25.2
+pandas==2.1.4
+joblib==1.3.2
+
+# MLOps and Experiment Tracking
+mlflow==2.10.2
+mlflow-skinny==2.10.2
+
+# Kubeflow Pipeline (if using K8s training)
+kfp==2.4.0
+kubernetes==28.1.0
+
+# Data processing and feature engineering
+scipy==1.11.4
+matplotlib==3.8.2
+seaborn==0.13.0
+
+# Healthcare AI specific
+transformers==4.36.2
+torch==2.1.2
+datasets==2.15.0
+
+# Object storage (for artifacts)
+boto3==1.34.0
+minio==7.2.0
+
+# HTTP client for MLOps integration
+requests==2.31.0
+httpx==0.25.2
+
+# Configuration and environment
+python-dotenv==1.0.0
+pydantic==2.5.0
+pydantic-settings==2.1.0
+
+# Logging and monitoring
+structlog==23.2.0
+python-json-logger==2.0.7
+
+# Data validation
+great-expectations==0.18.8
+
+# Development and testing
+pytest==7.4.3
+pytest-asyncio==0.21.1
+
+# Utilities
+tqdm==4.66.1
+click==8.1.7

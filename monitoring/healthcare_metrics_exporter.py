@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Environment variables
-HEALTHCARE_AI_URL = os.getenv("HEALTHCARE_AI_URL", "http://localhost:8080")
+HEALTHCARE_AI_URL = os.getenv("HEALTHCARE_AI_URL", "http://localhost:8000")
 MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "http://localhost:5050")
 EXPORT_INTERVAL = int(os.getenv("EXPORT_INTERVAL", "10"))
 
@@ -264,9 +264,10 @@ class HealthcareMetricsCollector:
 
 def main():
     """Main function to run the metrics exporter"""
-    # Start Prometheus metrics server
-    start_http_server(9091)
-    logger.info("Metrics exporter started on port 9091")
+    # Start Prometheus metrics server on port specified by environment or Docker compose
+    prometheus_port = int(os.getenv("PROMETHEUS_PORT", 8082))
+    start_http_server(prometheus_port)
+    logger.info(f"Metrics exporter started on port {prometheus_port}")
 
     # Initialize collector
     collector = HealthcareMetricsCollector()

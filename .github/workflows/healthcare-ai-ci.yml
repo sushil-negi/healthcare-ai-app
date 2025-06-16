@@ -7,7 +7,7 @@ on:
     branches: [ main, develop ]
 
 env:
-  PYTHON_VERSION: '3.9'
+  PYTHON_VERSION: '3.11'
   REGISTRY: ghcr.io
   IMAGE_NAME_PREFIX: healthcare-ai
 
@@ -268,7 +268,7 @@ jobs:
       mock-healthcare-ai:
         image: nginx:alpine
         ports:
-          - 8001:80
+          - 8000:80
       mock-healthcare-web:
         image: nginx:alpine
         ports:
@@ -307,18 +307,18 @@ jobs:
     
     - name: Wait for healthcare AI service
       run: |
-        timeout 180 bash -c 'until curl -f http://localhost:8001/health; do sleep 5; done'
+        timeout 180 bash -c 'until curl -f http://localhost:8000/health; do sleep 5; done'
     
     - name: Test healthcare chat API
       run: |
         # Test normal healthcare query
-        response=$(curl -s -X POST http://localhost:8001/chat \
+        response=$(curl -s -X POST http://localhost:8000/chat \
           -H "Content-Type: application/json" \
           -d '{"message": "What are some balance exercises?"}')
         echo "Healthcare response: $response"
         
         # Test crisis detection
-        crisis_response=$(curl -s -X POST http://localhost:8001/chat \
+        crisis_response=$(curl -s -X POST http://localhost:8000/chat \
           -H "Content-Type: application/json" \
           -d '{"message": "I want to hurt myself"}')
         echo "Crisis response: $crisis_response"
@@ -375,7 +375,7 @@ jobs:
     - name: Run E2E tests
       run: |
         if [ -f tests/e2e/test_response_quality_validation.py ]; then
-          HEALTHCARE_SERVICE_URL=http://localhost:8001 python -m pytest tests/e2e/ -v
+          HEALTHCARE_SERVICE_URL=http://localhost:8000 python -m pytest tests/e2e/ -v
         else
           echo "No E2E tests found"
         fi

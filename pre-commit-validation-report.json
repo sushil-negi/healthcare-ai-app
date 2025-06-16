@@ -1,0 +1,213 @@
+{
+  "summary": {
+    "total_checks": 28,
+    "passed": 25,
+    "failed": 0,
+    "warnings": 3,
+    "duration": 0.5409390926361084
+  },
+  "results": [
+    {
+      "name": "Dockerfile: Dockerfile.metrics",
+      "status": "PASS",
+      "message": "All checks passed",
+      "details": [],
+      "fix_command": null
+    },
+    {
+      "name": "Dockerfile: Dockerfile.training",
+      "status": "PASS",
+      "message": "All checks passed",
+      "details": [],
+      "fix_command": null
+    },
+    {
+      "name": "Dockerfile: Dockerfile.pipeline",
+      "status": "PASS",
+      "message": "All checks passed",
+      "details": [],
+      "fix_command": null
+    },
+    {
+      "name": "Dockerfile: web/Dockerfile",
+      "status": "PASS",
+      "message": "All checks passed",
+      "details": [],
+      "fix_command": null
+    },
+    {
+      "name": "Dockerfile: pipelines/Dockerfile.training",
+      "status": "PASS",
+      "message": "All checks passed",
+      "details": [],
+      "fix_command": null
+    },
+    {
+      "name": "Dockerfile: monitoring/Dockerfile.metrics-exporter",
+      "status": "PASS",
+      "message": "All checks passed",
+      "details": [],
+      "fix_command": null
+    },
+    {
+      "name": "Dockerfile: src/models/healthcare-ai-k8s/Dockerfile",
+      "status": "PASS",
+      "message": "All checks passed",
+      "details": [],
+      "fix_command": null
+    },
+    {
+      "name": "Dockerfile: src/models/healthcare-ai-k8s/Dockerfile.simple",
+      "status": "PASS",
+      "message": "All checks passed",
+      "details": [],
+      "fix_command": null
+    },
+    {
+      "name": "Dockerfile: src/models/healthcare-ai/Dockerfile",
+      "status": "PASS",
+      "message": "All checks passed",
+      "details": [],
+      "fix_command": null
+    },
+    {
+      "name": "Requirements: web/requirements.txt",
+      "status": "PASS",
+      "message": "All dependencies valid",
+      "details": [],
+      "fix_command": null
+    },
+    {
+      "name": "Requirements: pipelines/requirements.txt",
+      "status": "WARN",
+      "message": "Found 1 issues",
+      "details": [
+        "Line 22: Consider CPU version of torch for faster CI builds"
+      ],
+      "fix_command": "Edit pipelines/requirements.txt to fix package issues"
+    },
+    {
+      "name": "Requirements: monitoring/requirements.txt",
+      "status": "PASS",
+      "message": "All dependencies valid",
+      "details": [],
+      "fix_command": null
+    },
+    {
+      "name": "Requirements: src/models/healthcare-ai-k8s/requirements.txt",
+      "status": "PASS",
+      "message": "All dependencies valid",
+      "details": [],
+      "fix_command": null
+    },
+    {
+      "name": "Requirements: src/models/healthcare-ai/requirements.txt",
+      "status": "WARN",
+      "message": "Found 1 issues",
+      "details": [
+        "Line 4: Consider CPU version of torch for faster CI builds"
+      ],
+      "fix_command": "Edit src/models/healthcare-ai/requirements.txt to fix package issues"
+    },
+    {
+      "name": "Docker Compose: docker-compose.app.yml",
+      "status": "PASS",
+      "message": "Configuration valid",
+      "details": [],
+      "fix_command": null
+    },
+    {
+      "name": "Docker Compose: docker-compose.healthcare.yml",
+      "status": "PASS",
+      "message": "Configuration valid",
+      "details": [],
+      "fix_command": null
+    },
+    {
+      "name": "CI Configuration",
+      "status": "PASS",
+      "message": "CI configuration looks good",
+      "details": [],
+      "fix_command": null
+    },
+    {
+      "name": "Docker Build: healthcare-ai",
+      "status": "PASS",
+      "message": "Build configuration valid",
+      "details": [],
+      "fix_command": null
+    },
+    {
+      "name": "Docker Build: healthcare-web",
+      "status": "PASS",
+      "message": "Build configuration valid",
+      "details": [],
+      "fix_command": null
+    },
+    {
+      "name": "Docker Build: healthcare-data-pipeline",
+      "status": "PASS",
+      "message": "Build configuration valid",
+      "details": [],
+      "fix_command": null
+    },
+    {
+      "name": "Docker Build: healthcare-training",
+      "status": "PASS",
+      "message": "Build configuration valid",
+      "details": [],
+      "fix_command": null
+    },
+    {
+      "name": "Docker Build: healthcare-metrics",
+      "status": "PASS",
+      "message": "Build configuration valid",
+      "details": [],
+      "fix_command": null
+    },
+    {
+      "name": "Docker Build: healthcare-ai",
+      "status": "PASS",
+      "message": "Build configuration valid",
+      "details": [],
+      "fix_command": null
+    },
+    {
+      "name": "Docker Build: healthcare-web",
+      "status": "PASS",
+      "message": "Build configuration valid",
+      "details": [],
+      "fix_command": null
+    },
+    {
+      "name": "Docker Build: healthcare-metrics",
+      "status": "PASS",
+      "message": "Build configuration valid",
+      "details": [],
+      "fix_command": null
+    },
+    {
+      "name": "Docker Build: healthcare-training",
+      "status": "PASS",
+      "message": "Build configuration valid",
+      "details": [],
+      "fix_command": null
+    },
+    {
+      "name": "Port Consistency",
+      "status": "PASS",
+      "message": "All ports configured consistently",
+      "details": [],
+      "fix_command": null
+    },
+    {
+      "name": "Security Issues",
+      "status": "WARN",
+      "message": "Found 1 potential security issues",
+      "details": [
+        "scripts/realtime_social_data.py: Potential hardcoded token"
+      ],
+      "fix_command": "Review and fix security issues"
+    }
+  ]
+}
