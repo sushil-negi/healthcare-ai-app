@@ -6,7 +6,7 @@ services:
   healthcare-ai:
     build: 
       context: ./src/models/healthcare-ai
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.ci
     ports:
       - "8001:8000"
     environment:
