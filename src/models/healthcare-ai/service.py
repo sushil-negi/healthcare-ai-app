@@ -62,15 +62,29 @@ class HealthcareAIHandler(BaseHTTPRequestHandler):
         if not hasattr(self.__class__, "ai_engine"):
             logger.info("Initializing Healthcare AI Engine...")
 
-            # Always use our updated HealthcareResponseEngine for E2E compatibility
+            # Try to use advanced HealthcareAIEngine first, fallback to basic engine
             try:
-                logger.info("Loading Healthcare Response Engine...")
-                self.__class__.ai_engine = HealthcareResponseEngine()
-                logger.info("✅ Healthcare Response Engine loaded successfully")
+                logger.info(f"ENGINES_AVAILABLE status: {ENGINES_AVAILABLE}")
+                if ENGINES_AVAILABLE:
+                    logger.info("Loading Advanced Healthcare AI Engine...")
+                    # Start with knowledge-base mode first, then try LLM
+                    self.__class__.ai_engine = HealthcareAIEngine(use_llm=False)
+                    logger.info("✅ Advanced Healthcare AI Engine (knowledge-base mode) loaded successfully")
+                else:
+                    logger.info("ENGINES_AVAILABLE is False, loading Healthcare Response Engine...")
+                    self.__class__.ai_engine = HealthcareResponseEngine()
+                    logger.info("✅ Healthcare Response Engine loaded successfully")
             except Exception as e:
-                logger.warning(f"Healthcare Response Engine failed: {e}")
-                logger.info("Using basic healthcare engine fallback")
-                self.__class__.ai_engine = BasicHealthcareEngine()
+                logger.error(f"Advanced engine failed with error: {e}")
+                import traceback
+                logger.error(f"Full traceback: {traceback.format_exc()}")
+                logger.info("Falling back to basic healthcare engine")
+                try:
+                    self.__class__.ai_engine = HealthcareResponseEngine()
+                    logger.info("✅ Healthcare Response Engine fallback loaded")
+                except Exception as e2:
+                    logger.error(f"All engines failed: {e2}")
+                    self.__class__.ai_engine = BasicHealthcareEngine()
 
         super().__init__(*args, **kwargs)
 

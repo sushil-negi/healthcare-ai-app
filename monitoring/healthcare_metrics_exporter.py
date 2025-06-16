@@ -9,7 +9,7 @@ import os
 import time
 from typing import Any, Dict
 
-import mlflow
+# import mlflow  # Temporarily disabled for minimal build
 import requests
 import schedule
 from prometheus_client import Counter, Gauge, Histogram, Summary, start_http_server
@@ -94,13 +94,14 @@ class HealthcareMetricsCollector:
         self.setup_mlflow()
 
     def setup_mlflow(self):
-        """Initialize MLflow client"""
-        try:
-            mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
-            self.mlflow_client = mlflow.tracking.MlflowClient()
-            logger.info(f"Connected to MLflow at {MLFLOW_TRACKING_URI}")
-        except Exception as e:
-            logger.error(f"Failed to connect to MLflow: {e}")
+        """Initialize MLflow client (disabled for minimal build)"""
+        # try:
+        #     mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
+        #     self.mlflow_client = mlflow.tracking.MlflowClient()
+        #     logger.info(f"Connected to MLflow at {MLFLOW_TRACKING_URI}")
+        # except Exception as e:
+        #     logger.error(f"Failed to connect to MLflow: {e}")
+        pass
 
     def collect_service_metrics(self):
         """Collect metrics from Healthcare AI service"""

@@ -16,9 +16,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl && \
     rm -rf /var/lib/apt/lists/* && apt-get clean
 
 # Copy requirements and install Python packages
-COPY requirements.ultra-minimal.txt .
+COPY requirements.advanced.txt .
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
-    pip install --no-cache-dir -r requirements.ultra-minimal.txt
+    pip install --no-cache-dir -r requirements.advanced.txt
 
 # Copy application code
 COPY . .
