@@ -16,10 +16,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl && \
     rm -rf /var/lib/apt/lists/* && apt-get clean
 
 # Copy requirements and install Python packages
-COPY requirements.txt .
+COPY requirements.ultra-minimal.txt .
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
-    pip install --no-cache-dir -r requirements.txt && \
-    pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu
+    pip install --no-cache-dir -r requirements.ultra-minimal.txt
 
 # Copy application code
 COPY . .
