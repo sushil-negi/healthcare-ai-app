@@ -1,0 +1,30 @@
+# CI-specific Docker Compose override
+# Removes external network dependencies for CI environment
+
+version: '3.8'
+
+services:
+  healthcare-ai:
+    networks:
+      - healthcare-ai
+
+  healthcare-web:
+    networks:
+      - healthcare-ai
+
+  healthcare-metrics:
+    networks:
+      - healthcare-ai
+
+  healthcare-redis:
+    networks:
+      - healthcare-ai
+
+  healthcare-training:
+    networks:
+      - healthcare-ai
+
+networks:
+  healthcare-ai:
+    driver: bridge
+    name: healthcare-ai-network

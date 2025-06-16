@@ -310,9 +310,9 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
     
-    - name: Create local container network
+    - name: Clean up any existing networks
       run: |
-        docker network create healthcare-ai-network || true
+        docker network rm healthcare-ai-network || true
     
     - name: Create test environment file
       run: |
@@ -332,14 +332,14 @@ jobs:
     
     - name: Start healthcare AI services
       run: |
-        # Verify docker-compose file exists
+        # Verify docker-compose files exist
         if [ ! -f docker-compose.healthcare.yml ]; then
           echo "ERROR: docker-compose.healthcare.yml not found in $(pwd)"
           ls -la
           exit 1
         fi
-        # Start services
-        docker compose -f docker-compose.healthcare.yml up -d
+        # Start services with CI override to remove external network dependencies
+        docker compose -f docker-compose.healthcare.yml -f docker-compose.ci.yml up -d
         sleep 30  # Wait for services to initialize
     
     - name: Wait for healthcare AI service
@@ -381,7 +381,7 @@ jobs:
     - name: Collect service logs
       if: failure()
       run: |
-        docker compose -f docker-compose.healthcare.yml logs > healthcare-logs.txt
+        docker compose -f docker-compose.healthcare.yml -f docker-compose.ci.yml logs > healthcare-logs.txt
     
     - name: Upload logs artifact
       if: failure()
