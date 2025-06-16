@@ -7,6 +7,35 @@ services:
   healthcare-ai:
     networks:
       - healthcare-ai
+    environment:
+      # Override MLOps platform URLs to point to CI mock services
+      - MLOPS_MODEL_REGISTRY_URL=http://localhost:8010
+      - MLOPS_EXPERIMENT_TRACKING_URL=http://localhost:8003
+      - MLOPS_FEATURE_STORE_URL=http://localhost:8002
+      - MLOPS_PIPELINE_ORCHESTRATOR_URL=http://localhost:8004
+      - MLOPS_AB_TESTING_URL=http://localhost:8090
+      
+      # Healthcare AI Configuration (keep from base)
+      - HEALTHCARE_AI_MODEL_PATH=/models/healthcare-ai-v1.0
+      - CRISIS_DETECTION_THRESHOLD=0.85
+      - RESPONSE_TIMEOUT_SECONDS=30
+      - MAX_CONVERSATION_LENGTH=1000
+      
+      # Crisis Response Configuration (keep from base)
+      - CRISIS_HOTLINE_API_URL=https://api.988lifeline.org
+      - EMERGENCY_ESCALATION_ENABLED=true
+      - CRISIS_RESPONSE_LOG_LEVEL=INFO
+      
+      # Security & Compliance (keep from base)
+      - HIPAA_COMPLIANCE_MODE=true
+      - PHI_ANONYMIZATION_ENABLED=true
+      - AUDIT_LOGGING_ENABLED=true
+      - SECURITY_HEADERS_ENABLED=true
+      
+      # Performance Settings (keep from base)
+      - MAX_CONCURRENT_REQUESTS=100
+      - RESPONSE_CACHE_TTL_SECONDS=300
+      - MODEL_WARMUP_ENABLED=true
 
   healthcare-web:
     networks:
@@ -20,11 +49,13 @@ services:
     networks:
       - healthcare-ai
 
+  # Disable training service for CI (it depends on external network)
   healthcare-training:
-    networks:
-      - healthcare-ai
+    profiles:
+      - disabled
 
 networks:
+  # Only use the healthcare-ai network for CI
   healthcare-ai:
     driver: bridge
     name: healthcare-ai-network
