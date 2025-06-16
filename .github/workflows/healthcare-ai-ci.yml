@@ -459,7 +459,7 @@ jobs:
     - name: Build and push Docker image
       uses: docker/build-push-action@v5
       with:
-        context: .
+        context: src/models/healthcare-ai
         file: src/models/healthcare-ai/Dockerfile
         push: true
         tags: ${{ steps.meta.outputs.tags }}
