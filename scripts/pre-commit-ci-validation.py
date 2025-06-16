@@ -576,33 +576,58 @@ class HealthcareAIPreCommitValidator:
 
         port_usage = {}  # service_name -> {file: file_path, ports: [ports]}
 
-        # Check docker-compose files
+        # Separate compose files into groups to avoid false port conflicts between alternatives
         compose_files = list(self.repo_root.glob("docker-compose*.yml"))
+
+        # Group compose files by environment/purpose to avoid false conflicts
+        file_groups = {}
         for compose_file in compose_files:
-            try:
-                with open(compose_file, "r") as f:
-                    compose_data = yaml.safe_load(f)
+            filename = compose_file.name
+            if "ci" in filename.lower():
+                group = "ci"
+            elif "test" in filename.lower():
+                group = "test"
+            elif "dev" in filename.lower() or "development" in filename.lower():
+                group = "dev"
+            elif "prod" in filename.lower() or "production" in filename.lower():
+                group = "prod"
+            else:
+                # Default group for main compose files
+                group = "main"
 
-                services = compose_data.get("services", {})
-                for service_name, service_config in services.items():
-                    ports = service_config.get("ports", [])
-                    extracted_ports = []
-                    for port in ports:
-                        if isinstance(port, str) and ":" in port:
-                            host_port, container_port = port.split(":")[:2]
-                            extracted_ports.append(
-                                {"host": host_port, "container": container_port}
-                            )
+            if group not in file_groups:
+                file_groups[group] = []
+            file_groups[group].append(compose_file)
 
-                    if extracted_ports:
-                        key = f"{service_name}-{compose_file.name}"
-                        port_usage[key] = {
-                            "file": str(compose_file),
-                            "ports": extracted_ports,
-                            "service": service_name,
-                        }
-            except Exception as e:
-                continue
+        # Check docker-compose files within each group separately
+        for group_name, group_files in file_groups.items():
+            for compose_file in group_files:
+                try:
+                    with open(compose_file, "r") as f:
+                        compose_data = yaml.safe_load(f)
+
+                    services = compose_data.get("services", {})
+                    for service_name, service_config in services.items():
+                        ports = service_config.get("ports", [])
+                        extracted_ports = []
+                        for port in ports:
+                            if isinstance(port, str) and ":" in port:
+                                host_port, container_port = port.split(":")[:2]
+                                extracted_ports.append(
+                                    {"host": host_port, "container": container_port}
+                                )
+
+                        if extracted_ports:
+                            # Include group in key to allow same ports across different environment groups
+                            key = f"{service_name}-{group_name}-{compose_file.name}"
+                            port_usage[key] = {
+                                "file": str(compose_file),
+                                "ports": extracted_ports,
+                                "service": service_name,
+                                "group": group_name,
+                            }
+                except Exception as e:
+                    continue
 
         # Check Dockerfiles for exposed ports
         dockerfiles = list(self.repo_root.rglob("Dockerfile*"))
@@ -645,18 +670,38 @@ class HealthcareAIPreCommitValidator:
 
         # Analyze port conflicts and inconsistencies
         issues = []
-        host_port_map = {}  # host_port -> [services using it]
 
+        # Check for host port conflicts within each environment group separately
+        for group_name, group_files in file_groups.items():
+            group_host_port_map = {}  # host_port -> [services using it]
+
+            for key, config in port_usage.items():
+                # Only check conflicts within the same group
+                if config.get("group") != group_name:
+                    continue
+
+                service = config["service"]
+
+                # Check for host port conflicts within this group
+                if "ports" in config:
+                    for port_info in config["ports"]:
+                        host_port = port_info["host"]
+                        if host_port not in group_host_port_map:
+                            group_host_port_map[host_port] = []
+                        group_host_port_map[host_port].append(
+                            f"{service} ({config['file']})"
+                        )
+
+            # Report host port conflicts within this group only
+            for host_port, services in group_host_port_map.items():
+                if len(services) > 1:
+                    issues.append(
+                        f"Host port {host_port} conflict in {group_name} environment: {', '.join(services)}"
+                    )
+
+        # Check port consistency within individual services (across all groups)
         for key, config in port_usage.items():
             service = config["service"]
-
-            # Check for host port conflicts
-            if "ports" in config:
-                for port_info in config["ports"]:
-                    host_port = port_info["host"]
-                    if host_port not in host_port_map:
-                        host_port_map[host_port] = []
-                    host_port_map[host_port].append(f"{service} ({config['file']})")
 
             # Check port consistency within service
             exposed = config.get("exposed", [])
@@ -668,11 +713,6 @@ class HealthcareAIPreCommitValidator:
                 issues.append(
                     f"Service {service}: Inconsistent ports across configurations: {all_ports}"
                 )
-
-        # Report host port conflicts
-        for host_port, services in host_port_map.items():
-            if len(services) > 1:
-                issues.append(f"Host port {host_port} conflict: {', '.join(services)}")
 
         if issues:
             results.append(
