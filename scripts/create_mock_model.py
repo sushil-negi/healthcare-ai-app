@@ -12,6 +12,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 try:
     import joblib
     from healthcare_mock_model import MockHealthcareModel
+
     JOBLIB_AVAILABLE = True
 except ImportError:
     JOBLIB_AVAILABLE = False
@@ -37,11 +38,11 @@ if JOBLIB_AVAILABLE:
 if not JOBLIB_AVAILABLE:
     # Create a simple JSON fallback
     fallback_model = {
-        "model_type": "mock_healthcare_model", 
+        "model_type": "mock_healthcare_model",
         "version": "1.0.0",
         "categories": [
             "adl_mobility",
-            "adl_self_care", 
+            "adl_self_care",
             "senior_medication",
             "senior_social",
             "mental_health_anxiety",
@@ -51,12 +52,13 @@ if not JOBLIB_AVAILABLE:
             "disability_equipment",
             "disability_rights",
             "crisis_mental_health",
-            "general_healthcare"
-        ]
+            "general_healthcare",
+        ],
     }
-    
+
     # Save as JSON with .joblib extension for compatibility
     import json
+
     with open(model_path, "w") as f:
         json.dump(fallback_model, f)
     print(f"✅ Fallback JSON mock model created at: {model_path}")

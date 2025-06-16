@@ -50,30 +50,38 @@ class HealthcareModelValidator:
                     if ML_AVAILABLE:
                         try:
                             import joblib
+
                             self.model = joblib.load(model_path)
                             logger.info(f"✅ Joblib model loaded from: {model_path}")
                             return True
                         except Exception as joblib_error:
-                            logger.warning(f"Joblib load failed: {joblib_error}, trying JSON...")
-                    
+                            logger.warning(
+                                f"Joblib load failed: {joblib_error}, trying JSON..."
+                            )
+
                     # Try loading as JSON fallback
                     try:
                         import json
-                        with open(model_path, 'r') as f:
+
+                        with open(model_path, "r") as f:
                             model_data = json.load(f)
-                        
+
                         if isinstance(model_data, dict) and "model_type" in model_data:
-                            self.model = {"type": "mock_model", "data": model_data, "path": model_path}
+                            self.model = {
+                                "type": "mock_model",
+                                "data": model_data,
+                                "path": model_path,
+                            }
                             logger.info(f"✅ JSON mock model loaded from: {model_path}")
                             return True
                     except Exception as json_error:
                         logger.warning(f"JSON load failed: {json_error}")
-                        
+
                     # Final fallback - create mock model
                     self.model = {"type": "mock_model", "path": model_path}
                     logger.info(f"✅ Fallback mock model created for: {model_path}")
                     return True
-                    
+
                 except Exception as e:
                     logger.warning(f"Failed to load model from {model_path}: {e}")
 

@@ -1,6 +1,6 @@
 {
   "file_path": "data/test_healthcare_training.json",
-  "total_samples": 7,
+  "total_samples": 11,
   "compliance_passed": true,
   "issues": [],
   "warnings": [
@@ -18,10 +18,10 @@
       "account_numbers": 0
     },
     "disclaimer_coverage": {
-      "total_responses_with_disclaimers": 6,
+      "total_responses_with_disclaimers": 10,
       "medical_queries": 4,
       "medical_queries_with_disclaimers": 4,
-      "overall_coverage": 85.71428571428571,
+      "overall_coverage": 90.9090909090909,
       "medical_coverage": 100.0
     },
     "crisis_compliance": {
@@ -31,9 +31,9 @@
     },
     "data_minimization": {
       "field_usage": {
-        "query": 7,
-        "category": 7,
-        "response": 7
+        "query": 11,
+        "category": 11,
+        "response": 11
       },
       "unnecessary_fields": []
     },

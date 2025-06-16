@@ -1,26 +1,26 @@
 {
   "validation_passed": false,
-  "timestamp": 1750082407.6551309,
+  "timestamp": 1750083109.837965,
   "results": {
     "clarity": {
-      "total_responses": 7,
-      "clear_responses": 7,
+      "total_responses": 11,
+      "clear_responses": 11,
       "clarity_rate": 1.0,
       "issues": 0
     },
     "completeness": {
       "metrics": {
-        "has_advice": 7,
-        "has_disclaimer": 6,
-        "has_resources": 7,
-        "has_action_items": 0,
-        "total": 7
+        "has_advice": 11,
+        "has_disclaimer": 10,
+        "has_resources": 9,
+        "has_action_items": 1,
+        "total": 11
       },
       "scores": {
         "advice_rate": 1.0,
-        "disclaimer_rate": 0.8571428571428571,
-        "resources_rate": 1.0,
-        "action_items_rate": 0.0
+        "disclaimer_rate": 0.9090909090909091,
+        "resources_rate": 0.8181818181818182,
+        "action_items_rate": 0.09090909090909091
       }
     },
     "safety": {
@@ -31,15 +31,15 @@
     },
     "empathy": {
       "metrics": {
-        "total": 7,
-        "empathetic": 7,
+        "total": 11,
+        "empathetic": 10,
         "supportive": 2,
-        "personalized": 6
+        "personalized": 10
       },
       "scores": {
-        "empathy_rate": 1.0,
-        "support_rate": 0.2857142857142857,
-        "personalization_rate": 0.8571428571428571
+        "empathy_rate": 0.9090909090909091,
+        "support_rate": 0.18181818181818182,
+        "personalization_rate": 0.9090909090909091
       }
     }
   }
