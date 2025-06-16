@@ -456,12 +456,12 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
     
-    - name: Build and push Docker image
+    - name: Build Docker image (no push - permissions issue)
       uses: docker/build-push-action@v5
       with:
         context: src/models/healthcare-ai
         file: src/models/healthcare-ai/Dockerfile
-        push: true
+        push: false
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
         cache-from: type=gha
