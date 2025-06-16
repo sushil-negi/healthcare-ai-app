@@ -65,6 +65,32 @@ curl -X POST http://localhost:8080/chat \
   -d '{"message": "My elderly parent needs help with daily activities"}'
 ```
 
+## Accessing Deployed System
+
+### Docker Images
+The Healthcare AI application is automatically built and published to GitHub Container Registry:
+
+```bash
+# Pull the latest images
+docker pull ghcr.io/sushil-negi/healthcare-ai-app/healthcare-ai-healthcare-ai:latest
+docker pull ghcr.io/sushil-negi/healthcare-ai-app/healthcare-ai-healthcare-web:latest
+docker pull ghcr.io/sushil-negi/healthcare-ai-app/healthcare-ai-healthcare-metrics:latest
+```
+
+### Production Deployment
+For production environments, use the published Docker images with appropriate environment configurations:
+
+```bash
+# Example production docker-compose override
+docker compose -f docker-compose.app.yml \
+  -f docker-compose.production.yml \
+  up -d
+```
+
+### API Documentation
+- **Development**: http://localhost:8080/docs (FastAPI auto-generated)
+- **Note**: API docs are disabled in HIPAA compliance mode for security
+
 ## Healthcare AI Features
 
 ### Response Categories
