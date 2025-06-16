@@ -452,7 +452,7 @@ class HealthcareAIPreCommitValidator:
                     mock_service_ports = [
                         "8000",
                         "8003",
-                        "8002", 
+                        "8002",
                         "8004",
                         "8090",
                         "8001",  # Healthcare AI service
