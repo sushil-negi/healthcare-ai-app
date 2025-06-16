@@ -1,10 +1,10 @@
 {
   "summary": {
-    "total_checks": 28,
-    "passed": 25,
-    "failed": 0,
+    "total_checks": 32,
+    "passed": 28,
+    "failed": 1,
     "warnings": 3,
-    "duration": 0.504492998123169
+    "duration": 0.6291091442108154
   },
   "results": [
     {
@@ -124,6 +124,13 @@
       "fix_command": null
     },
     {
+      "name": "Docker Compose: docker-compose.healthcare-ci.yml",
+      "status": "PASS",
+      "message": "Configuration valid",
+      "details": [],
+      "fix_command": null
+    },
+    {
       "name": "CI Configuration",
       "status": "PASS",
       "message": "CI configuration looks good",
@@ -194,11 +201,37 @@
       "fix_command": null
     },
     {
-      "name": "Port Consistency",
+      "name": "Docker Build: healthcare-ai",
       "status": "PASS",
-      "message": "All ports configured consistently",
+      "message": "Build configuration valid",
       "details": [],
       "fix_command": null
+    },
+    {
+      "name": "Docker Build: healthcare-web",
+      "status": "PASS",
+      "message": "Build configuration valid",
+      "details": [],
+      "fix_command": null
+    },
+    {
+      "name": "Docker Build: healthcare-metrics",
+      "status": "PASS",
+      "message": "Build configuration valid",
+      "details": [],
+      "fix_command": null
+    },
+    {
+      "name": "Port Consistency",
+      "status": "FAIL",
+      "message": "Found 4 port issues",
+      "details": [
+        "Host port 8001 conflict: healthcare-ai (/Users/snegi/Documents/github/enterprise-repos/healthcare-ai-app/docker-compose.healthcare.yml), healthcare-ai (/Users/snegi/Documents/github/enterprise-repos/healthcare-ai-app/docker-compose.healthcare-ci.yml)",
+        "Host port 8889 conflict: healthcare-web (/Users/snegi/Documents/github/enterprise-repos/healthcare-ai-app/docker-compose.healthcare.yml), healthcare-web (/Users/snegi/Documents/github/enterprise-repos/healthcare-ai-app/docker-compose.healthcare-ci.yml)",
+        "Host port 8082 conflict: healthcare-metrics (/Users/snegi/Documents/github/enterprise-repos/healthcare-ai-app/docker-compose.healthcare.yml), healthcare-metrics (/Users/snegi/Documents/github/enterprise-repos/healthcare-ai-app/docker-compose.healthcare-ci.yml)",
+        "Host port 6380 conflict: healthcare-redis (/Users/snegi/Documents/github/enterprise-repos/healthcare-ai-app/docker-compose.healthcare.yml), healthcare-redis (/Users/snegi/Documents/github/enterprise-repos/healthcare-ai-app/docker-compose.healthcare-ci.yml)"
+      ],
+      "fix_command": "Resolve port conflicts and inconsistencies"
     },
     {
       "name": "Security Issues",
