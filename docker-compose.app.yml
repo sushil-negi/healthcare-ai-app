@@ -88,7 +88,7 @@ services:
       context: .
       dockerfile: Dockerfile.metrics
     ports:
-      - "8082:8080"
+      - "8085:8080"
     environment:
       HEALTHCARE_SERVICE_URL: http://healthcare-ai:8080
       PROMETHEUS_PORT: 8080
@@ -108,5 +108,5 @@ networks:
     driver: bridge
   # Connect to platform network for MLOps services
   default:
-    external:
-      name: mlops-project_mlops-platform
+    external: true
+    name: ${MLOPS_NETWORK_NAME:-mlops-project_mlops-platform}

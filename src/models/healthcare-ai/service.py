@@ -257,8 +257,8 @@ class HealthcareAIHandler(BaseHTTPRequestHandler):
 
 def start_healthcare_ai_service():
     """Start the healthcare AI service"""
-    # Default to 8080 for CI/production, but allow override
-    port = int(os.getenv("PORT", 8080))
+    # Default to 8000 for Docker, but allow override
+    port = int(os.getenv("PORT", 8000))
 
     logger.info(f"🚀 Starting Healthcare AI Service on port {port}")
     logger.info(f"Engines available: {ENGINES_AVAILABLE}")
