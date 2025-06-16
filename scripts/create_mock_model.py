@@ -3,20 +3,43 @@
 Create a mock healthcare model for CI testing
 """
 
+import json
 import sys
 from pathlib import Path
 
-# Add scripts directory to path to import mock model
-sys.path.insert(0, str(Path(__file__).parent))
+# Create a simple mock model class directly here to avoid import issues
+class MockHealthcareModel:
+    """Mock healthcare AI model for testing"""
+    
+    def __init__(self):
+        self.model_type = "mock_healthcare_model"
+        self.version = "1.0.0"
+        self.categories = [
+            "adl_mobility",
+            "adl_self_care",
+            "senior_medication", 
+            "senior_social",
+            "mental_health_anxiety",
+            "mental_health_depression",
+            "caregiver_respite",
+            "caregiver_burnout",
+            "disability_equipment",
+            "disability_rights",
+            "crisis_mental_health",
+            "general_healthcare",
+        ]
+
+    def predict(self, X):
+        """Mock predict method"""
+        if isinstance(X, str):
+            X = [X]
+        return ["general_healthcare"] * len(X)
 
 try:
     import joblib
-    from healthcare_mock_model import MockHealthcareModel
-
     JOBLIB_AVAILABLE = True
 except ImportError:
     JOBLIB_AVAILABLE = False
-    import json
 
 
 # Create models directory

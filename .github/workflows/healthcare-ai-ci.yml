@@ -134,10 +134,8 @@ jobs:
     
     - name: Validate crisis detection
       run: |
-        # Ensure mock model exists for crisis detection
-        if [ -f scripts/create_mock_model.py ] && [ ! -f models/healthcare_model.joblib ]; then
-          python scripts/create_mock_model.py
-        fi
+        # Create mock model for crisis detection
+        python scripts/create_mock_model.py
         if [ -f tests/crisis_detection_validation.py ]; then
           python tests/crisis_detection_validation.py
         else
