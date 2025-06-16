@@ -1,4 +1,4 @@
-version: '3.8'
+# version field is obsolete in Docker Compose v2+
 
 services:
   # Healthcare AI Engine

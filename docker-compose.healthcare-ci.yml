@@ -1,8 +1,6 @@
 # Healthcare AI Services - CI Configuration
 # Self-contained version without external network dependencies
 
-version: '3.8'
-
 services:
   # Healthcare AI Engine
   healthcare-ai:

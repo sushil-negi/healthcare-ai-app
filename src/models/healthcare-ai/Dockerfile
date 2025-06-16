@@ -28,7 +28,9 @@ RUN pip install --upgrade pip && \
 # Copy application code (optimized layer)
 COPY src/ ./src/
 COPY service.py .
-COPY data/combined_healthcare_training_data.jsonl ./data/
+
+# Create data directory (training data may be mounted via volume)
+RUN mkdir -p /app/data
 
 # Create non-root user
 RUN adduser --disabled-password --gecos '' appuser && \
