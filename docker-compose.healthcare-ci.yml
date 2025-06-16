@@ -66,6 +66,7 @@ services:
       - API_TIMEOUT_SECONDS=30
       - SESSION_SECRET=healthcare-ai-secret
       - HIPAA_COMPLIANCE_MODE=true
+      - PORT=8080  # Override to match Docker health check
     depends_on:
       - healthcare-ai
     networks:

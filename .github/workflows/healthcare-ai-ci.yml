@@ -342,6 +342,13 @@ jobs:
         docker compose -f docker-compose.healthcare-ci.yml up -d
         sleep 30  # Wait for services to initialize
     
+    - name: Check service status
+      run: |
+        echo "=== Docker container status ==="
+        docker ps -a
+        echo "=== Docker logs for healthcare services ==="
+        docker compose -f docker-compose.healthcare-ci.yml logs --tail=50
+    
     - name: Wait for healthcare AI service
       run: |
         timeout 180 bash -c 'until curl -f http://localhost:8001/health; do sleep 5; done'
