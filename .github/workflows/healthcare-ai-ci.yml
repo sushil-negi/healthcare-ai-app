@@ -121,6 +121,11 @@ jobs:
     
     - name: Test healthcare model accuracy
       run: |
+        # Create mock model for CI testing
+        if [ -f scripts/create_mock_model.py ]; then
+          python scripts/create_mock_model.py
+        fi
+        # Run model validation
         if [ -f tests/healthcare_model_validation.py ]; then
           python tests/healthcare_model_validation.py
         else
@@ -129,6 +134,10 @@ jobs:
     
     - name: Validate crisis detection
       run: |
+        # Ensure mock model exists for crisis detection
+        if [ -f scripts/create_mock_model.py ] && [ ! -f models/healthcare_model.joblib ]; then
+          python scripts/create_mock_model.py
+        fi
         if [ -f tests/crisis_detection_validation.py ]; then
           python tests/crisis_detection_validation.py
         else

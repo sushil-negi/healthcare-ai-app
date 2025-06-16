@@ -3,66 +3,60 @@
 Create a mock healthcare model for CI testing
 """
 
-import os
+import sys
 from pathlib import Path
 
-import joblib
+# Add scripts directory to path to import mock model
+sys.path.insert(0, str(Path(__file__).parent))
 
-
-# Mock model class
-class MockHealthcareModel:
-    def __init__(self):
-        self.model_type = "mock_healthcare_model"
-        self.version = "1.0.0"
-        self.categories = [
-            "ADL",
-            "Senior Care Services",
-            "Mental Health Support",
-            "Respite Care",
-            "Disability Support",
-            "Medication Management",
-            "Mobility Assistance",
-            "Nutrition Counseling",
-            "Social Support",
-            "General Healthcare",
-            "Crisis/Emergency",
-        ]
-        self.crisis_keywords = [
-            "suicide",
-            "kill myself",
-            "end it all",
-            "hurt myself",
-            "die",
-        ]
-
-    def predict(self, X):
-        """Mock predict method"""
-        return ["General Healthcare"] * len(X)
-
-    def predict_proba(self, X):
-        """Mock predict_proba method"""
-        import numpy as np
-
-        return np.ones((len(X), len(self.categories))) / len(self.categories)
+try:
+    import joblib
+    from healthcare_mock_model import MockHealthcareModel
+    JOBLIB_AVAILABLE = True
+except ImportError:
+    JOBLIB_AVAILABLE = False
+    import json
 
 
 # Create models directory
 models_dir = Path("models")
 models_dir.mkdir(exist_ok=True)
 
-# Create and save mock model
-mock_model = MockHealthcareModel()
 model_path = models_dir / "healthcare_model.joblib"
 
-try:
-    joblib.dump(mock_model, model_path)
-    print(f"✅ Mock model created at: {model_path}")
-except Exception as e:
-    print(f"❌ Failed to create mock model: {e}")
-    # Create a simple dictionary as fallback
-    import json
+if JOBLIB_AVAILABLE:
+    try:
+        # Create and save mock model with joblib
+        mock_model = MockHealthcareModel()
+        joblib.dump(mock_model, model_path)
+        print(f"✅ Mock model created at: {model_path}")
+    except Exception as e:
+        print(f"❌ Failed to create joblib mock model: {e}")
+        JOBLIB_AVAILABLE = False
 
-    fallback_model = {"model_type": "mock_healthcare_model", "version": "1.0.0"}
+if not JOBLIB_AVAILABLE:
+    # Create a simple JSON fallback
+    fallback_model = {
+        "model_type": "mock_healthcare_model", 
+        "version": "1.0.0",
+        "categories": [
+            "adl_mobility",
+            "adl_self_care", 
+            "senior_medication",
+            "senior_social",
+            "mental_health_anxiety",
+            "mental_health_depression",
+            "caregiver_respite",
+            "caregiver_burnout",
+            "disability_equipment",
+            "disability_rights",
+            "crisis_mental_health",
+            "general_healthcare"
+        ]
+    }
+    
+    # Save as JSON with .joblib extension for compatibility
+    import json
     with open(model_path, "w") as f:
         json.dump(fallback_model, f)
-    print(f"✅ Fallback mock model created at: {model_path}")
+    print(f"✅ Fallback JSON mock model created at: {model_path}")

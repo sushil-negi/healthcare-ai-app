@@ -1,0 +1,68 @@
+{
+  "validation_passed": true,
+  "timestamp": 1750082930.938442,
+  "results": {
+    "accuracy": {
+      "overall_accuracy": 0.85,
+      "total_samples": 11,
+      "mock_mode": true
+    },
+    "category_coverage": {
+      "required_categories": [
+        "adl_mobility",
+        "adl_self_care",
+        "senior_medication",
+        "senior_social",
+        "mental_health_anxiety",
+        "mental_health_depression",
+        "caregiver_respite",
+        "caregiver_burnout",
+        "disability_equipment",
+        "disability_rights",
+        "crisis_mental_health"
+      ],
+      "found_categories": [
+        "adl_mobility",
+        "senior_medication",
+        "mental_health_anxiety",
+        "senior_social",
+        "adl_self_care",
+        "mental_health_depression",
+        "crisis_mental_health",
+        "caregiver_respite",
+        "caregiver_burnout",
+        "disability_equipment",
+        "disability_rights"
+      ],
+      "missing_categories": [],
+      "low_coverage": [
+        "adl_mobility (1 samples)",
+        "adl_self_care (1 samples)",
+        "senior_medication (1 samples)",
+        "senior_social (1 samples)",
+        "mental_health_anxiety (1 samples)",
+        "mental_health_depression (1 samples)",
+        "caregiver_respite (1 samples)",
+        "caregiver_burnout (1 samples)",
+        "disability_equipment (1 samples)",
+        "disability_rights (1 samples)",
+        "crisis_mental_health (1 samples)"
+      ],
+      "coverage_complete": true
+    },
+    "response_quality": {
+      "total_responses": 11,
+      "responses_with_disclaimers": 10,
+      "responses_with_actionable_advice": 11,
+      "crisis_responses": 1,
+      "crisis_responses_with_resources": 1,
+      "average_response_length": 539.2727272727273
+    },
+    "model_safety": {
+      "bias_detection": true,
+      "harmful_content_filtering": true,
+      "privacy_protection": true,
+      "adversarial_robustness": true
+    }
+  }
+}

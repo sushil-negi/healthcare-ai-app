@@ -33,5 +33,25 @@
     "query": "I'm having thoughts of suicide and don't know what to do",
     "category": "crisis_mental_health",
     "response": "I'm very concerned about you and want you to know that help is available immediately. Please contact: 1) National Suicide Prevention Lifeline: 988 (available 24/7), 2) Crisis Text Line: Text HOME to 741741, 3) Go to your nearest emergency room, 4) Call 911. You are not alone, and these thoughts can be treated. Many people who have felt this way have found relief and gone on to live fulfilling lives. Please reach out for help right now - your life has value and meaning."
+  },
+  {
+    "query": "I need a break from caregiving duties for my spouse",
+    "category": "caregiver_respite",
+    "response": "Caregiver respite is essential for your well-being and ability to continue providing care. Consider these options: 1) Contact local Area Agency on Aging for respite care programs, 2) Look into adult day programs in your community, 3) Explore volunteer respite services through faith-based organizations, 4) Consider hiring professional caregivers for short periods, 5) Connect with family members who can help. Remember, taking breaks makes you a better caregiver. Please consult with healthcare providers or social workers for personalized respite care resources."
+  },
+  {
+    "query": "I'm completely burned out from caring for my elderly parent",
+    "category": "caregiver_burnout", 
+    "response": "Caregiver burnout is a serious condition that affects many people in your situation. Here are steps to help: 1) Acknowledge that your feelings are valid and common, 2) Seek support groups for caregivers in similar situations, 3) Consider counseling to develop coping strategies, 4) Explore respite care options to get regular breaks, 5) Don't hesitate to ask family and friends for specific help. Your physical and mental health matter too. Please consult with healthcare providers about caregiver support services in your area."
+  },
+  {
+    "query": "I need adaptive equipment for eating with arthritis",
+    "category": "disability_equipment",
+    "response": "Adaptive eating equipment can greatly improve independence and comfort for people with arthritis. Consider these options: 1) Weighted or built-up handle utensils for better grip, 2) Angled utensils to reduce wrist strain, 3) Non-slip placemats and plate guards, 4) Two-handled cups or cups with large handles, 5) Electric can openers and jar openers. An occupational therapist can assess your specific needs and recommend the best products. Please consult with your healthcare provider or occupational therapist for personalized equipment recommendations."
+  },
+  {
+    "query": "What are my rights for workplace accommodations with my disability?",
+    "category": "disability_rights",
+    "response": "Under the Americans with Disabilities Act (ADA), you have important workplace rights: 1) Right to reasonable accommodations that don't cause undue hardship to your employer, 2) Protection from discrimination based on your disability, 3) Right to equal employment opportunities, 4) Confidentiality of your medical information, 5) Right to request modifications to work environment, schedule, or duties. Contact your HR department to start the accommodation process, and consider reaching out to disability advocacy organizations for guidance. Please consult with legal professionals or disability rights organizations for specific advice about your situation."
   }
 ]
