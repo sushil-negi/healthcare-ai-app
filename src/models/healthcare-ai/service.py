@@ -69,14 +69,19 @@ class HealthcareAIHandler(BaseHTTPRequestHandler):
                     logger.info("Loading Advanced Healthcare AI Engine...")
                     # Start with knowledge-base mode first, then try LLM
                     self.__class__.ai_engine = HealthcareAIEngine(use_llm=False)
-                    logger.info("✅ Advanced Healthcare AI Engine (knowledge-base mode) loaded successfully")
+                    logger.info(
+                        "✅ Advanced Healthcare AI Engine (knowledge-base mode) loaded successfully"
+                    )
                 else:
-                    logger.info("ENGINES_AVAILABLE is False, loading Healthcare Response Engine...")
+                    logger.info(
+                        "ENGINES_AVAILABLE is False, loading Healthcare Response Engine..."
+                    )
                     self.__class__.ai_engine = HealthcareResponseEngine()
                     logger.info("✅ Healthcare Response Engine loaded successfully")
             except Exception as e:
                 logger.error(f"Advanced engine failed with error: {e}")
                 import traceback
+
                 logger.error(f"Full traceback: {traceback.format_exc()}")
                 logger.info("Falling back to basic healthcare engine")
                 try:

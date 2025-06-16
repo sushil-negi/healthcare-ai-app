@@ -28,96 +28,96 @@ class HealthcareResponseEngine:
                     "For mobility and daily living support, ",
                     "When dealing with activities of daily living, ",
                     "To help with your daily activities, ",
-                    "For independence in daily tasks, "
+                    "For independence in daily tasks, ",
                 ],
                 "responses": [
                     "consider adaptive equipment and techniques",
                     "occupational therapy can provide personalized strategies",
                     "focus on safety and gradual improvement",
-                    "break tasks into manageable steps"
+                    "break tasks into manageable steps",
                 ],
                 "endings": [
                     ". Each person's needs are unique, so professional assessment is recommended.",
                     ". Always prioritize safety and consult healthcare providers for guidance.",
-                    ". Start slowly and adjust based on your comfort level."
-                ]
+                    ". Start slowly and adjust based on your comfort level.",
+                ],
             },
             "mental_health": {
                 "starters": [
                     "Your mental health concerns are important, ",
                     "For emotional support and guidance, ",
                     "Mental wellness is crucial, ",
-                    "These feelings are valid and common, "
+                    "These feelings are valid and common, ",
                 ],
                 "responses": [
                     "professional counseling can provide personalized strategies",
                     "support groups offer connection with others who understand",
                     "mindfulness and self-care practices can be helpful",
-                    "building a support network is essential"
+                    "building a support network is essential",
                 ],
                 "endings": [
                     ". Don't hesitate to reach out for professional help.",
                     ". Your wellbeing matters and support is available.",
-                    ". Take things one day at a time."
-                ]
+                    ". Take things one day at a time.",
+                ],
             },
             "senior_care": {
                 "starters": [
                     "Caring for seniors involves multiple considerations, ",
                     "For elderly care needs, ",
                     "Senior wellness requires attention to ",
-                    "Age-related changes mean "
+                    "Age-related changes mean ",
                 ],
                 "responses": [
                     "health monitoring and medication management are key",
                     "social engagement and mental stimulation are vital",
                     "safety modifications and fall prevention are important",
-                    "coordination with healthcare providers is essential"
+                    "coordination with healthcare providers is essential",
                 ],
                 "endings": [
                     ". Every senior's situation is unique and deserves individualized care.",
                     ". Geriatric specialists can provide comprehensive assessments.",
-                    ". Family involvement and community resources can be very helpful."
-                ]
+                    ". Family involvement and community resources can be very helpful.",
+                ],
             },
             "respite_care": {
                 "starters": [
                     "Caregiver support is absolutely essential, ",
                     "Taking breaks from caregiving isn't selfish, ",
                     "Caregiver burnout is real and preventable, ",
-                    "Your wellbeing as a caregiver matters, "
+                    "Your wellbeing as a caregiver matters, ",
                 ],
                 "responses": [
                     "respite services can provide temporary relief",
                     "support groups connect you with others who understand",
                     "family and friends can often help more than you think",
-                    "professional resources are available in most communities"
+                    "professional resources are available in most communities",
                 ],
                 "endings": [
                     ". Taking care of yourself helps you care for others better.",
                     ". Don't wait until you're overwhelmed to seek help.",
-                    ". You deserve support and time to recharge."
-                ]
+                    ". You deserve support and time to recharge.",
+                ],
             },
             "disabilities": {
                 "starters": [
                     "For disability support and accommodations, ",
                     "When addressing accessibility needs, ",
                     "Adaptive solutions can help with ",
-                    "Disability rights and resources include "
+                    "Disability rights and resources include ",
                 ],
                 "responses": [
                     "assistive technology and equipment options",
                     "advocacy organizations that provide guidance",
                     "workplace and community accommodations",
-                    "legal protections and rights awareness"
+                    "legal protections and rights awareness",
                 ],
                 "endings": [
                     ". Disability specialists can provide personalized recommendations.",
                     ". Your independence and dignity are the priority.",
-                    ". Many resources exist to support your goals."
-                ]
-            }
+                    ". Many resources exist to support your goals.",
+                ],
+            },
         }
 
     def _load_healthcare_knowledge(self) -> Dict:
@@ -238,41 +238,47 @@ class HealthcareResponseEngine:
             },
         }
 
-    def _generate_dynamic_response(self, user_input: str, category: str) -> Optional[str]:
+    def _generate_dynamic_response(
+        self, user_input: str, category: str
+    ) -> Optional[str]:
         """Generate dynamic, varied responses using templates and context"""
         # Get template for category
         templates = self.response_templates.get(category, {})
-        
+
         if templates:
             # Build dynamic response from template components
             starter = random.choice(templates.get("starters", [""]))
             response = random.choice(templates.get("responses", [""]))
             ending = random.choice(templates.get("endings", [""]))
-            
+
             # Personalize based on user input context
             personal_context = self._extract_personal_context(user_input)
             if personal_context:
                 starter = starter.replace("For ", f"For {personal_context}, ")
-            
+
             return f"{starter}{response}{ending}"
-        
+
         return None
 
     def _extract_personal_context(self, user_input: str) -> str:
         """Extract personal context from user input for personalization"""
         text_lower = user_input.lower()
-        
+
         if "my mother" in text_lower or "my mom" in text_lower:
             return "your mother"
         elif "my father" in text_lower or "my dad" in text_lower:
             return "your father"
         elif "my parent" in text_lower:
             return "your parent"
-        elif "my spouse" in text_lower or "my husband" in text_lower or "my wife" in text_lower:
+        elif (
+            "my spouse" in text_lower
+            or "my husband" in text_lower
+            or "my wife" in text_lower
+        ):
             return "your spouse"
         elif "myself" in text_lower or "i feel" in text_lower or "i am" in text_lower:
             return "your personal situation"
-        
+
         return ""
 
     def _detect_crisis(self, text: str) -> bool:
