@@ -1,7 +1,22 @@
 # Healthcare AI Features Documentation
 
 ## Overview
-The Healthcare AI Assistant provides specialized support across 11 distinct healthcare categories, each designed to address specific needs of patients, seniors, caregivers, and individuals with disabilities.
+The Healthcare AI Assistant is powered by an advanced AI engine trained on 525,000 healthcare conversations. It provides specialized support across 11 distinct healthcare categories with dynamic, personalized responses tailored to each user's specific situation.
+
+## Advanced AI Engine
+
+### Core Technology
+- **525K Training Dataset**: Real healthcare conversations for context-aware responses
+- **Dynamic Response Templates**: Multiple response variations with personalization
+- **Knowledge-Base Mode**: Sophisticated similarity matching from training data
+- **Context Awareness**: Adapts responses based on personal context ("your mother", "your spouse")
+- **Optional LLM Integration**: DialoGPT models for enhanced response generation
+
+### Response Quality
+- **No "Canned" Responses**: Each response is dynamically generated
+- **Personalization**: Adapts language and advice to user's specific situation
+- **Varied Templates**: Multiple starters, responses, and endings for each category
+- **Context Extraction**: Recognizes relationships and personal circumstances
 
 ## Feature Categories
 

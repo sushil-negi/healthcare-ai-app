@@ -6,12 +6,14 @@ A production-ready healthcare AI application designed for **crisis detection and
 
 ## Application Overview
 
-The Healthcare AI application is a specialized chatbot that:
-- Provides healthcare guidance across 11 categories (ADL, mental health, senior care, etc.)
-- Detects crisis situations and provides immediate resources (988 hotline)
-- Maintains HIPAA compliance and medical disclaimers
-- Uses ML models for response classification and generation
-- Integrates with the MLOps platform for model management and monitoring
+The Healthcare AI application is an advanced healthcare chatbot that:
+- **525K Training Dataset**: Uses real healthcare conversations for context-aware responses
+- **Dynamic Response Generation**: Templates with personalization instead of static responses
+- **11 Healthcare Categories**: ADL, mental health, senior care, respite care, disabilities
+- **Crisis Detection**: Immediate detection and 988 hotline integration
+- **Advanced AI Engine**: Knowledge-base mode with optional LLM integration
+- **HIPAA Compliance**: Medical disclaimers and privacy protection
+- **MLOps Integration**: Model management, monitoring, and continuous improvement
 
 ## Directory Structure
 
@@ -92,6 +94,14 @@ docker compose -f docker-compose.app.yml \
 - **Note**: API docs are disabled in HIPAA compliance mode for security
 
 ## Healthcare AI Features
+
+### Advanced AI Engine
+- **525K Training Conversations**: Real healthcare data for context-aware responses
+- **Dynamic Response Generation**: Templates with personalized context
+- **Knowledge-Base Mode**: Sophisticated similarity matching from training data
+- **Optional LLM Integration**: DialoGPT models for enhanced responses
+- **Response Variation**: No more "canned" responses - each response is unique
+- **Context Awareness**: Personalizes responses (e.g., "your mother" vs generic advice)
 
 ### Response Categories
 1. **ADL (Activities of Daily Living)** - Mobility, transfers, daily tasks
