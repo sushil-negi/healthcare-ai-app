@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLOps Platform - Unified Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            background: #f5f5f7; 
+            color: #333;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+        .header p { opacity: 0.9; font-size: 1.1rem; }
+        
+        .tabs {
+            background: white;
+            border-bottom: 1px solid #e1e5e9;
+            padding: 0 2rem;
+            display: flex;
+            gap: 0;
+        }
+        
+        .tab {
+            background: none;
+            border: none;
+            padding: 1rem 2rem;
+            cursor: pointer;
+            font-size: 1rem;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+            background: #f8f9ff;
+        }
+        
+        .tab:hover { 
+            color: #667eea; 
+            background: #f8f9ff;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 2rem;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        .tab-content.active { display: block; }
+        
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); 
+            gap: 1.5rem; 
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            align-items: start;
+        }
+        
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+        
+        @media (max-width: 1200px) {
+            .grid-3 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 1024px) {
+            .workflow-horizontal {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .grid, .grid-2, .grid-3 {
+                grid-template-columns: 1fr;
+            }
+            
+            .workflow-horizontal {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .workflow-horizontal {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid #e1e5e9;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        
+        .card-full-height {
+            height: 100%;
+        }
+        
+        .card-content {
+            flex: 1;
+        }
+        
+        .card h3 { 
+            margin-bottom: 1.5rem; 
+            color: #333;
+            font-size: 1.3rem;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 0.5rem;
+        }
+        
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .metric:last-child { border-bottom: none; }
+        
+        .metric-value { 
+            font-weight: 600; 
+            color: #333;
+        }
+        
+        .status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .status.good { background: #d1fae5; color: #065f46; }
+        .status.warning { background: #fef3c7; color: #92400e; }
+        .status.danger { background: #fee2e2; color: #b91c1c; }
+        
+        .chart-container {
+            position: relative;
+            height: 250px;
+            margin-top: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .alert {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #b91c1c;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        
+        /* Real-time specific styles */
+        .realtime-bg { background: #111827; color: white; }
+        .realtime-bg .card { background: #1f2937; border-color: #374151; color: white; }
+        .realtime-bg .card h3 { color: #f9fafb; border-bottom-color: #374151; }
+        .realtime-bg .tab { color: #9ca3af; }
+        .realtime-bg .tab.active { color: #10b981; border-bottom-color: #10b981; background: #1f2937; }
+        .realtime-bg .metric { border-bottom-color: #374151; }
+        .realtime-bg .metric span { color: #e5e7eb; }
+        .realtime-bg .metric-value { color: #f9fafb; }
+        .realtime-bg .metric-value-big { color: #10b981; }
+        .realtime-bg .metric-label { color: #9ca3af; }
+        
+        .live-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #dc2626;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+        
+        .metric-big {
+            text-align: center;
+            margin: 1rem 0;
+        }
+        
+        .metric-value-big {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #10b981;
+        }
+        
+        .metric-label {
+            font-size: 0.9rem;
+            color: #6b7280;
+            margin-top: 0.5rem;
+        }
+        
+        .activity-feed {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .activity-item {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #374151;
+        }
+        
+        .activity-time {
+            color: #6b7280;
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        }
+        
+        .traffic-bar {
+            height: 30px;
+            background: #374151;
+            border-radius: 6px;
+            overflow: hidden;
+            display: flex;
+            margin: 1rem 0;
+        }
+        
+        .traffic-segment {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .control { background: #6366f1; }
+        .treatment { background: #10b981; }
+        
+        /* Platform specific styles */
+        .platform-card {
+            background: white;
+            color: #333;
+        }
+        
+        .platform-card h3 {
+            border-bottom-color: #e5e7eb;
+            color: #333;
+        }
+        
+        .architecture-diagram {
+            background: #f8f9ff;
+            border: 2px dashed #667eea;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.75rem;
+            line-height: 1.4;
+            white-space: pre;
+            overflow-x: auto;
+            color: #374151;
+        }
+        
+        .arch-visual {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .arch-row {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .arch-box {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            min-width: 150px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .arch-box h4 {
+            margin: 0 0 0.5rem 0;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .arch-box ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 0.75rem;
+        }
+        
+        .arch-platform {
+            background: linear-gradient(135deg, #10b981, #059669);
+            padding: 1.5rem;
+            border-radius: 12px;
+            color: white;
+            min-width: 300px;
+            text-align: center;
+        }
+        
+        .arch-connector {
+            color: #667eea;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .workflow-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .workflow-horizontal {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 0.5rem;
+            align-items: center;
+            padding: 1rem 0;
+            margin: 1rem 0;
+        }
+        
+        .workflow-step-horizontal {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 0.75rem;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            text-align: center;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .workflow-step-horizontal:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+        
+        .workflow-step-horizontal::before {
+            content: '';
+            position: absolute;
+            left: -2px;
+            top: -2px;
+            bottom: -2px;
+            width: 4px;
+            border-radius: 2px;
+        }
+        
+        .workflow-step-horizontal:nth-child(1)::before { background: #ef4444; }
+        .workflow-step-horizontal:nth-child(2)::before { background: #f59e0b; }
+        .workflow-step-horizontal:nth-child(3)::before { background: #eab308; }
+        .workflow-step-horizontal:nth-child(4)::before { background: #22c55e; }
+        .workflow-step-horizontal:nth-child(5)::before { background: #3b82f6; }
+        .workflow-step-horizontal:nth-child(6)::before { background: #8b5cf6; }
+        
+        .workflow-header-horizontal {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .workflow-title-horizontal {
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: #1f2937;
+            text-align: center;
+            line-height: 1.1;
+        }
+        
+        .workflow-description-horizontal {
+            color: #6b7280;
+            font-size: 0.7rem;
+            line-height: 1.3;
+            text-align: center;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .workflow-number-small {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+            box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+        }
+        
+        .workflow-step {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 1.5rem;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .workflow-step:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+        
+        .workflow-step::before {
+            content: '';
+            position: absolute;
+            left: -2px;
+            top: -2px;
+            bottom: -2px;
+            width: 4px;
+            border-radius: 2px;
+        }
+        
+        .workflow-step:nth-child(1)::before { background: #ef4444; }
+        .workflow-step:nth-child(3)::before { background: #f59e0b; }
+        .workflow-step:nth-child(5)::before { background: #eab308; }
+        .workflow-step:nth-child(7)::before { background: #22c55e; }
+        .workflow-step:nth-child(9)::before { background: #3b82f6; }
+        .workflow-step:nth-child(11)::before { background: #8b5cf6; }
+        
+        .workflow-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .workflow-number {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1rem;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+        
+        .workflow-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #1f2937;
+        }
+        
+        .workflow-description {
+            color: #6b7280;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-left: 48px;
+        }
+        
+        .workflow-connector {
+            display: flex;
+            justify-content: center;
+            color: #9ca3af;
+            font-size: 1.2rem;
+            margin: -0.5rem 0;
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚀 MLOps Platform - Unified Dashboard</h1>
+        <p>Complete platform monitoring, real-time metrics, and operational visibility</p>
+    </div>
+    
+    <div class="tabs">
+        <button class="tab active" onclick="showTab('platform')">🏛️ Platform Overview</button>
+        <button class="tab" onclick="showTab('monitoring')">📊 Monitoring & Alerts</button>
+        <button class="tab" onclick="showTab('realtime')">⚡ Real-time Operations</button>
+    </div>
+    
+    <!-- Platform Tab -->
+    <div id="platform" class="tab-content active">
+        <div class="alert">
+            <strong>🎯 Enterprise MLOps Platform:</strong> Multi-tenant architecture supporting 15+ AI applications across healthcare, finance, and retail
+        </div>
+        
+        <!-- Top Row: Platform Overview and A/B Testing -->
+        <div class="grid-2" style="margin-bottom: 1.5rem;">
+            <div class="card platform-card">
+                <h3>Platform Overview</h3>
+                <div class="card-content">
+                    <div class="metric">
+                        <span>Active Applications</span>
+                        <span class="metric-value">15</span>
+                    </div>
+                    <div class="metric">
+                        <span>Total Models</span>
+                        <span class="metric-value">47</span>
+                    </div>
+                    <div class="metric">
+                        <span>Production Models</span>
+                        <span class="metric-value">28</span>
+                    </div>
+                    <div class="metric">
+                        <span>Monthly Predictions</span>
+                        <span class="metric-value">2.8M</span>
+                    </div>
+                    <div class="metric">
+                        <span>Platform Uptime</span>
+                        <span class="metric-value">99.97%</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>A/B Testing Platform</h3>
+                <div class="card-content">
+                    <div class="metric">
+                        <span>Active Experiments</span>
+                        <span class="metric-value">12 <span class="status good">Running</span></span>
+                    </div>
+                    <div class="metric">
+                        <span>Traffic Split</span>
+                        <span class="metric-value">50/50 Control/Treatment</span>
+                    </div>
+                    <div class="metric">
+                        <span>Statistical Significance</span>
+                        <span class="metric-value">Reached <span class="status good">✓</span></span>
+                    </div>
+                    <div class="metric">
+                        <span>Performance Improvement</span>
+                        <span class="metric-value">+13.2% <span class="status good">Significant</span></span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="abTestPlatformChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Second Row: Model Registry and Healthcare AI -->
+        <div class="grid-2" style="margin-bottom: 1.5rem;">
+            <div class="card">
+                <h3>Model Registry</h3>
+                <div class="card-content">
+                    <div class="metric">
+                        <span>Registered Models</span>
+                        <span class="metric-value">47</span>
+                    </div>
+                    <div class="metric">
+                        <span>Model Versions</span>
+                        <span class="metric-value">142</span>
+                    </div>
+                    <div class="metric">
+                        <span>Latest Deployment</span>
+                        <span class="metric-value">healthcare-ai v2.1.4</span>
+                    </div>
+                    <div class="metric">
+                        <span>Deployment Success Rate</span>
+                        <span class="metric-value">98.7% <span class="status good">Excellent</span></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>Healthcare AI Use Case</h3>
+                <div class="card-content">
+                    <div class="metric">
+                        <span>Training Dataset Size</span>
+                        <span class="metric-value">525K conversations</span>
+                    </div>
+                    <div class="metric">
+                        <span>Crisis Detection Accuracy</span>
+                        <span class="metric-value">99.2% <span class="status good">Critical</span></span>
+                    </div>
+                    <div class="metric">
+                        <span>Response Time (P99)</span>
+                        <span class="metric-value">142ms <span class="status good">Fast</span></span>
+                    </div>
+                    <div class="metric">
+                        <span>HIPAA Compliance</span>
+                        <span class="metric-value"><span class="status good">Certified</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Third Row: Horizontal Workflow -->
+        <div style="margin-bottom: 1.5rem;">
+            <div class="card">
+                <h3>🔄 MLOps Workflow Pipeline</h3>
+                <div class="workflow-horizontal">
+                    <div class="workflow-step-horizontal">
+                        <div class="workflow-header-horizontal">
+                            <div class="workflow-number-small">1</div>
+                            <div class="workflow-title-horizontal">📥 Data Ingestion</div>
+                        </div>
+                        <div class="workflow-description-horizontal">
+                            Automated pipeline with quality validation and lineage tracking
+                        </div>
+                    </div>
+                    
+                    <div class="workflow-step-horizontal">
+                        <div class="workflow-header-horizontal">
+                            <div class="workflow-number-small">2</div>
+                            <div class="workflow-title-horizontal">🧠 Model Training</div>
+                        </div>
+                        <div class="workflow-description-horizontal">
+                            Distributed training with hyperparameter optimization
+                        </div>
+                    </div>
+                    
+                    <div class="workflow-step-horizontal">
+                        <div class="workflow-header-horizontal">
+                            <div class="workflow-number-small">3</div>
+                            <div class="workflow-title-horizontal">✅ Model Validation</div>
+                        </div>
+                        <div class="workflow-description-horizontal">
+                            Automated testing, bias detection, and compliance
+                        </div>
+                    </div>
+                    
+                    <div class="workflow-step-horizontal">
+                        <div class="workflow-header-horizontal">
+                            <div class="workflow-number-small">4</div>
+                            <div class="workflow-title-horizontal">🧪 A/B Testing</div>
+                        </div>
+                        <div class="workflow-description-horizontal">
+                            Safe production testing with traffic splitting
+                        </div>
+                    </div>
+                    
+                    <div class="workflow-step-horizontal">
+                        <div class="workflow-header-horizontal">
+                            <div class="workflow-number-small">5</div>
+                            <div class="workflow-title-horizontal">🚀 Deployment</div>
+                        </div>
+                        <div class="workflow-description-horizontal">
+                            Blue-green deployment with rollback capabilities
+                        </div>
+                    </div>
+                    
+                    <div class="workflow-step-horizontal">
+                        <div class="workflow-header-horizontal">
+                            <div class="workflow-number-small">6</div>
+                            <div class="workflow-title-horizontal">📊 Monitoring</div>
+                        </div>
+                        <div class="workflow-description-horizontal">
+                            Real-time drift detection and health assessment
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Fourth Row: Platform Architecture -->
+        <div>
+            <div class="card">
+                <h3>Platform Architecture</h3>
+                <div class="arch-visual">
+                    <div class="arch-row">
+                        <div class="arch-box">
+                            <h4>Model Registry</h4>
+                            <ul>
+                                <li>• Versioning</li>
+                                <li>• Metadata</li>
+                                <li>• Lineage</li>
+                            </ul>
+                        </div>
+                        <div class="arch-box">
+                            <h4>Experiment Tracking</h4>
+                            <ul>
+                                <li>• Metrics</li>
+                                <li>• Artifacts</li>
+                                <li>• Parameters</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="arch-connector">⬇️</div>
+                    
+                    <div class="arch-platform">
+                        <h4 style="margin: 0 0 1rem 0; font-size: 1.1rem;">🚀 MLOps Platform Core</h4>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; font-size: 0.8rem;">
+                            <div>• A/B Testing</div>
+                            <div>• Auto-retraining</div>
+                            <div>• Drift Detection</div>
+                            <div>• Model Promotion</div>
+                            <div>• Federated Learning</div>
+                            <div>• Multi-tenancy</div>
+                        </div>
+                    </div>
+                    
+                    <div class="arch-connector">⬇️</div>
+                    
+                    <div class="arch-row">
+                        <div class="arch-box" style="background: linear-gradient(135deg, #f59e0b, #d97706); font-size: 0.8rem;">
+                            <h4>Healthcare AI</h4>
+                            <ul>
+                                <li>• 525K Dataset</li>
+                                <li>• Crisis Detection</li>
+                                <li>• HIPAA Compliant</li>
+                            </ul>
+                        </div>
+                        <div class="arch-box" style="background: linear-gradient(135deg, #ef4444, #dc2626); font-size: 0.8rem;">
+                            <h4>Financial AI</h4>
+                            <ul>
+                                <li>• Risk Assessment</li>
+                                <li>• Fraud Detection</li>
+                                <li>• Compliance</li>
+                            </ul>
+                        </div>
+                        <div class="arch-box" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); font-size: 0.8rem;">
+                            <h4>Retail AI</h4>
+                            <ul>
+                                <li>• Recommendations</li>
+                                <li>• Inventory</li>
+                                <li>• Personalization</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Monitoring Tab -->
+    <div id="monitoring" class="tab-content">
+        <div class="alert">
+            <strong>🔍 Active Monitoring:</strong> Tracking 28 production models across healthcare, financial, and retail domains
+        </div>
+        
+        <!-- Top Row: Drift Detection and Performance -->
+        <div class="grid-2" style="margin-bottom: 1.5rem;">
+            <div class="card">
+                <h3>Model Drift Detection</h3>
+                <div class="card-content">
+                    <div class="metric">
+                        <span>Data Drift Score (KS Test)</span>
+                        <span class="metric-value">0.08 <span class="status good">Normal</span></span>
+                    </div>
+                    <div class="metric">
+                        <span>Feature Distribution Shift</span>
+                        <span class="metric-value">0.12 <span class="status good">Stable</span></span>
+                    </div>
+                    <div class="metric">
+                        <span>Performance Drift</span>
+                        <span class="metric-value">-2.1% <span class="status warning">Monitor</span></span>
+                    </div>
+                    <div class="metric">
+                        <span>Last Drift Check</span>
+                        <span class="metric-value">2 minutes ago</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="driftChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>Model Performance</h3>
+                <div class="card-content">
+                    <div class="metric">
+                        <span>Healthcare AI Accuracy</span>
+                        <span class="metric-value">94.8% <span class="status good">Excellent</span></span>
+                    </div>
+                    <div class="metric">
+                        <span>Response Time (P99)</span>
+                        <span class="metric-value">142ms <span class="status good">Fast</span></span>
+                    </div>
+                    <div class="metric">
+                        <span>Crisis Detection Rate</span>
+                        <span class="metric-value">99.2% <span class="status good">Critical OK</span></span>
+                    </div>
+                    <div class="metric">
+                        <span>User Satisfaction</span>
+                        <span class="metric-value">89.1% <span class="status good">High</span></span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bottom Row: Auto-Retraining and System Health -->
+        <div class="grid-2">
+            <div class="card">
+                <h3>Auto-Retraining Pipeline</h3>
+                <div class="card-content">
+                    <div class="metric">
+                        <span>Pipeline Status</span>
+                        <span class="metric-value"><span class="status good">Active</span></span>
+                    </div>
+                    <div class="metric">
+                        <span>New Conversations Collected</span>
+                        <span class="metric-value">1,847 today</span>
+                    </div>
+                    <div class="metric">
+                        <span>Last Retraining</span>
+                        <span class="metric-value">3 days ago</span>
+                    </div>
+                    <div class="metric">
+                        <span>Next Scheduled</span>
+                        <span class="metric-value">4 days</span>
+                    </div>
+                    <div class="metric">
+                        <span>Training Data Quality</span>
+                        <span class="metric-value">96.8% <span class="status good">High</span></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>System Health Monitoring</h3>
+                <div class="card-content">
+                    <div class="metric">
+                        <span>Model Registry</span>
+                        <span class="metric-value"><span class="status good">Healthy</span></span>
+                    </div>
+                    <div class="metric">
+                        <span>Experiment Tracking</span>
+                        <span class="metric-value"><span class="status good">Operational</span></span>
+                    </div>
+                    <div class="metric">
+                        <span>A/B Testing Engine</span>
+                        <span class="metric-value"><span class="status good">Running</span></span>
+                    </div>
+                    <div class="metric">
+                        <span>Auto-retraining</span>
+                        <span class="metric-value"><span class="status warning">Scheduled</span></span>
+                    </div>
+                    <div class="metric">
+                        <span>Data Pipeline</span>
+                        <span class="metric-value"><span class="status good">Processing</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Real-time Tab -->
+    <div id="realtime" class="tab-content realtime-bg">
+        <div class="alert">
+            <strong>⚡ Real-time Operations:</strong> Live metrics and operational status with auto-refresh 
+            <span class="live-indicator">
+                <span class="live-dot"></span>
+                LIVE
+            </span>
+        </div>
+        
+        <!-- Top Row: A/B Testing and Request Volume -->
+        <div class="grid-2" style="margin-bottom: 1.5rem;">
+            <div class="card">
+                <h3>A/B Test Performance</h3>
+                <div class="card-content">
+                    <div class="traffic-bar">
+                        <div class="traffic-segment control" style="width: 50%;">Control 50%</div>
+                        <div class="traffic-segment treatment" style="width: 50%;">Treatment 50%</div>
+                    </div>
+                    <div class="metric-big">
+                        <div class="metric-value-big" id="improvement">+13.2%</div>
+                        <div class="metric-label">Treatment Improvement</div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="abTestChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>Request Volume</h3>
+                <div class="card-content">
+                    <div class="metric-big">
+                        <div class="metric-value-big" id="requests">2,847</div>
+                        <div class="metric-label">Requests/Hour</div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="volumeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Middle Row: Performance and System Health -->
+        <div class="grid-2" style="margin-bottom: 1.5rem;">
+            <div class="card">
+                <h3>Model Performance</h3>
+                <div class="card-content">
+                    <div class="metric-big">
+                        <div class="metric-value-big" id="accuracy">94.8%</div>
+                        <div class="metric-label">Current Accuracy</div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="accuracyChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>System Health</h3>
+                <div class="card-content">
+                    <div class="metric-big">
+                        <div class="metric-value-big" id="uptime">99.9%</div>
+                        <div class="metric-label">Platform Uptime</div>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <div style="display: flex; justify-content: space-between; margin: 0.5rem 0;">
+                            <span>Model Registry</span>
+                            <span style="color: #10b981;">●</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin: 0.5rem 0;">
+                            <span>Experiment Tracking</span>
+                            <span style="color: #10b981;">●</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin: 0.5rem 0;">
+                            <span>A/B Testing</span>
+                            <span style="color: #10b981;">●</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin: 0.5rem 0;">
+                            <span>Auto-retraining</span>
+                            <span style="color: #f59e0b;">●</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bottom Row: Activity Feed and Federated Learning -->
+        <div class="grid-2">
+            <div class="card">
+                <h3>Live Activity Feed</h3>
+                <div class="card-content">
+                    <div class="activity-feed" id="activityFeed">
+                        <div class="activity-item">
+                            <div>Healthcare AI model promoted to production</div>
+                            <div class="activity-time">2 minutes ago</div>
+                        </div>
+                        <div class="activity-item">
+                            <div>A/B test statistical significance reached</div>
+                            <div class="activity-time">5 minutes ago</div>
+                        </div>
+                        <div class="activity-item">
+                            <div>Drift detection completed - no issues found</div>
+                            <div class="activity-time">8 minutes ago</div>
+                        </div>
+                        <div class="activity-item">
+                            <div>New model version registered: v2.1.4</div>
+                            <div class="activity-time">12 minutes ago</div>
+                        </div>
+                        <div class="activity-item">
+                            <div>Auto-retraining pipeline triggered</div>
+                            <div class="activity-time">1 hour ago</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>Federated Learning</h3>
+                <div class="card-content">
+                    <div class="metric-big">
+                        <div class="metric-value-big" id="participants">4</div>
+                        <div class="metric-label">Active Participants</div>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <div style="margin: 0.5rem 0;">Mayo Clinic: Round 3/5</div>
+                        <div style="margin: 0.5rem 0;">Johns Hopkins: Round 3/5</div>
+                        <div style="margin: 0.5rem 0;">Cleveland Clinic: Round 3/5</div>
+                        <div style="margin: 0.5rem 0;">Kaiser Permanente: Round 3/5</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Tab switching functionality
+        function showTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+            
+            // Apply theme for real-time tab
+            if (tabName === 'realtime') {
+                document.body.classList.add('realtime-bg');
+            } else {
+                document.body.classList.remove('realtime-bg');
+            }
+            
+            // Initialize charts for the active tab
+            setTimeout(() => initCharts(tabName), 100);
+        }
+        
+        // Chart initialization
+        function initCharts(tabName) {
+            const chartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { color: '#e5e7eb' }, ticks: { color: '#6b7280' } },
+                    y: { grid: { color: '#e5e7eb' }, ticks: { color: '#6b7280' } }
+                }
+            };
+            
+            const realtimeChartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { color: '#374151' }, ticks: { color: '#9ca3af' } },
+                    y: { grid: { color: '#374151' }, ticks: { color: '#9ca3af' } }
+                }
+            };
+            
+            if (tabName === 'platform') {
+                // A/B Test Platform Chart
+                const abTestPlatformCtx = document.getElementById('abTestPlatformChart');
+                if (abTestPlatformCtx) {
+                    new Chart(abTestPlatformCtx.getContext('2d'), {
+                        type: 'bar',
+                        data: {
+                            labels: ['Control', 'Treatment'],
+                            datasets: [{
+                                data: [72, 85],
+                                backgroundColor: ['#6366f1', '#10b981']
+                            }]
+                        },
+                        options: chartOptions
+                    });
+                }
+            }
+            
+            if (tabName === 'monitoring') {
+                // Drift Detection Chart
+                const driftCtx = document.getElementById('driftChart');
+                if (driftCtx) {
+                    new Chart(driftCtx.getContext('2d'), {
+                        type: 'line',
+                        data: {
+                            labels: ['1h ago', '45m', '30m', '15m', 'Now'],
+                            datasets: [{
+                                label: 'Drift Score',
+                                data: [0.05, 0.07, 0.08, 0.09, 0.08],
+                                borderColor: '#3b82f6',
+                                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                                tension: 0.4
+                            }]
+                        },
+                        options: { ...chartOptions, scales: { ...chartOptions.scales, y: { ...chartOptions.scales.y, beginAtZero: true, max: 0.2 } } }
+                    });
+                }
+                
+                // Performance Chart
+                const perfCtx = document.getElementById('performanceChart');
+                if (perfCtx) {
+                    new Chart(perfCtx.getContext('2d'), {
+                        type: 'line',
+                        data: {
+                            labels: ['1h ago', '45m', '30m', '15m', 'Now'],
+                            datasets: [{
+                                label: 'Accuracy %',
+                                data: [95.2, 94.9, 95.1, 94.8, 94.8],
+                                borderColor: '#10b981',
+                                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                                tension: 0.4
+                            }]
+                        },
+                        options: { ...chartOptions, scales: { ...chartOptions.scales, y: { ...chartOptions.scales.y, min: 90, max: 100 } } }
+                    });
+                }
+            }
+            
+            if (tabName === 'realtime') {
+                // A/B Test Chart
+                const abTestCtx = document.getElementById('abTestChart');
+                if (abTestCtx) {
+                    new Chart(abTestCtx.getContext('2d'), {
+                        type: 'line',
+                        data: {
+                            labels: ['10m', '8m', '6m', '4m', '2m', 'Now'],
+                            datasets: [
+                                {
+                                    label: 'Control',
+                                    data: [72, 73, 72, 74, 73, 72],
+                                    borderColor: '#6366f1',
+                                    backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                                    tension: 0.4
+                                },
+                                {
+                                    label: 'Treatment',
+                                    data: [85, 86, 87, 86, 88, 89],
+                                    borderColor: '#10b981',
+                                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                                    tension: 0.4
+                                }
+                            ]
+                        },
+                        options: realtimeChartOptions
+                    });
+                }
+                
+                // Volume Chart
+                const volumeCtx = document.getElementById('volumeChart');
+                if (volumeCtx) {
+                    new Chart(volumeCtx.getContext('2d'), {
+                        type: 'bar',
+                        data: {
+                            labels: ['10m', '8m', '6m', '4m', '2m', 'Now'],
+                            datasets: [{
+                                data: [450, 520, 480, 600, 580, 620],
+                                backgroundColor: '#3b82f6'
+                            }]
+                        },
+                        options: realtimeChartOptions
+                    });
+                }
+                
+                // Accuracy Chart
+                const accuracyCtx = document.getElementById('accuracyChart');
+                if (accuracyCtx) {
+                    new Chart(accuracyCtx.getContext('2d'), {
+                        type: 'line',
+                        data: {
+                            labels: ['10m', '8m', '6m', '4m', '2m', 'Now'],
+                            datasets: [{
+                                data: [94.5, 94.7, 94.6, 94.9, 94.8, 94.8],
+                                borderColor: '#10b981',
+                                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                                tension: 0.4
+                            }]
+                        },
+                        options: { ...realtimeChartOptions, scales: { ...realtimeChartOptions.scales, y: { ...realtimeChartOptions.scales.y, min: 90, max: 100 } } }
+                    });
+                }
+            }
+        }
+        
+        // Real-time updates for the real-time tab
+        function updateMetrics() {
+            const requests = Math.floor(2800 + Math.random() * 100);
+            const requestsEl = document.getElementById('requests');
+            if (requestsEl) requestsEl.textContent = requests.toLocaleString();
+            
+            const accuracy = (94.5 + Math.random() * 0.6).toFixed(1);
+            const accuracyEl = document.getElementById('accuracy');
+            if (accuracyEl) accuracyEl.textContent = accuracy + '%';
+            
+            const improvement = (13 + Math.random() * 1).toFixed(1);
+            const improvementEl = document.getElementById('improvement');
+            if (improvementEl) improvementEl.textContent = '+' + improvement + '%';
+        }
+        
+        function addActivity() {
+            const activities = [
+                'Model validation completed successfully',
+                'New experiment registered in tracking system',
+                'Traffic routing updated for A/B test',
+                'Performance metrics collected and analyzed',
+                'Model weights updated via federated learning'
+            ];
+            
+            const feed = document.getElementById('activityFeed');
+            if (feed) {
+                const newItem = document.createElement('div');
+                newItem.className = 'activity-item';
+                newItem.innerHTML = `
+                    <div>${activities[Math.floor(Math.random() * activities.length)]}</div>
+                    <div class="activity-time">Just now</div>
+                `;
+                feed.insertBefore(newItem, feed.firstChild);
+                
+                // Keep only last 10 items
+                while (feed.children.length > 10) {
+                    feed.removeChild(feed.lastChild);
+                }
+            }
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initCharts('platform');
+            setInterval(updateMetrics, 3000);
+            setInterval(addActivity, 8000);
+        });
+    </script>
+</body>
+</html>
