@@ -30,3 +30,6 @@ nltk==3.8.1
 # Additional optimizations
 wheel==0.41.3
 setuptools==68.2.2
+
+# Caching
+redis==4.6.0

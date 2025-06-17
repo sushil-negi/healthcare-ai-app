@@ -22,6 +22,11 @@ services:
       - RESPONSE_TIMEOUT_SECONDS=30
       - MAX_CONVERSATION_LENGTH=1000
       
+      # Redis Configuration
+      - REDIS_HOST=healthcare-redis
+      - REDIS_PORT=6379
+      - REDIS_ENABLED=true
+      
       # Crisis Response Configuration
       - CRISIS_HOTLINE_API_URL=https://api.988lifeline.org
       - EMERGENCY_ESCALATION_ENABLED=true
@@ -146,4 +151,4 @@ networks:
     name: healthcare-ai-network
   mlops-platform-network:
     external: true
-    name: ${MLOPS_NETWORK_NAME:-mlops-platform_mlops-platform}
+    name: mlops-platform-network

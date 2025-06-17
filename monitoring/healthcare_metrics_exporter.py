@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Environment variables
-HEALTHCARE_AI_URL = os.getenv("HEALTHCARE_AI_URL", "http://localhost:8000")
+HEALTHCARE_AI_URL = os.getenv("HEALTHCARE_AI_URL", "http://healthcare-ai:8000")
 MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "http://localhost:5050")
 EXPORT_INTERVAL = int(os.getenv("EXPORT_INTERVAL", "10"))
 
